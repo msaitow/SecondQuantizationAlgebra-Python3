@@ -34,14 +34,14 @@ from sqaOptions import options
 def CPloop(Spaces, Index, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   if not isinstance(Index, index):
-    raise TypeError, "Index should be a sqaIndex object"
+    raise TypeError("Index should be a sqaIndex object")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   Itype = ""
   if   Index.indType[0][0] == 'core':
@@ -65,17 +65,17 @@ def CPloop(Spaces, Index, File):
 def ReadBare(Spaces, T2, extBare, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   if not isinstance(T2, tensor):
-    raise TypeError, "T2 should be a tensor object"
+    raise TypeError("T2 should be a tensor object")
 
   if not type(extBare) == type(1):
-    raise TypeError, "extBare should be an integer"
+    raise TypeError("extBare should be an integer")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   File.write("  %s%sb = %s.get_amp2(i%s);\n" % (Spaces, T2.name, T2.name, T2.indices[extBare].name))
 
@@ -87,17 +87,17 @@ def ReadBare(Spaces, T2, extBare, File):
 def ReadRetval(Spaces, T2, extBare, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   if not isinstance(T2, tensor):
-    raise TypeError, "T2 should be a tensor object"
+    raise TypeError("T2 should be a tensor object")
 
   if not type(extBare) == type(1):
-    raise TypeError, "extBare should be an integer"
+    raise TypeError("extBare should be an integer")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   File.write("  %s%sb = orz::DTensor(retval.namps_iamp()[i%s]);\n" % (Spaces, T2.name, T2.indices[extBare].name))
 
@@ -110,17 +110,17 @@ def ReadRetval(Spaces, T2, extBare, File):
 def ReadERI(Spaces, V2, extEri, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   if not isinstance(V2, tensor):
-    raise TypeError, "V2 should be a tensor object"
+    raise TypeError("V2 should be a tensor object")
 
   if not type(extEri) == type(1):
-    raise TypeError, "extEri should be an integer"
+    raise TypeError("extEri should be an integer")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   i = V2.indices[extEri].name
 
@@ -158,17 +158,17 @@ def ReadERI(Spaces, V2, extEri, File):
 def ReadD4(Spaces, D4, extRdm4, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   if not isinstance(D4, tensor):
-    raise TypeError, "D4 should be a tensor object"
+    raise TypeError("D4 should be a tensor object")
 
   if not type(extRdm4) == type([]):
-    raise TypeError, "extRdm4 should be a list"
+    raise TypeError("extRdm4 should be a list")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   i1 = D4.indices[extRdm4[0]].name
   i2 = D4.indices[extRdm4[1]].name
@@ -203,17 +203,17 @@ def ReadD4(Spaces, D4, extRdm4, File):
 def AccBare(Spaces, T2, extBare, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   if not isinstance(T2, tensor):
-    raise TypeError, "T2 should be a tensor object"
+    raise TypeError("T2 should be a tensor object")
 
   if not type(extBare) == type(1):
-    raise TypeError, "extBare should be an integer"
+    raise TypeError("extBare should be an integer")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   File.write("  %sretval.acc_amp2(i%s, %sb);\n" % (Spaces, T2.indices[extBare].name, T2.name))
 
@@ -225,11 +225,11 @@ def AccBare(Spaces, T2, extBare, File):
 def LoopEnd(Spaces, File):
 
   if not type(Spaces) == type("   "):
-    raise TypeError, "Spaces should be a string"
+    raise TypeError("Spaces should be a string")
 
   a = open("a.out", "w")
   if not type(File) == type(a):
-    raise TypeError, "File should be a file object"
+    raise TypeError("File should be a file object")
 
   File.write("  %s}\n" % Spaces)
   File.write("  %s}\n" % Spaces)

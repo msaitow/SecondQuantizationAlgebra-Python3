@@ -28,13 +28,13 @@ E_dclk = [sqa.sfExOp([d, c, l, k])]
 
 T_dclk = [sqa.tensor('T2', [k, l, c, d], [Tsym])]
 
-print ""
-print "Evaluation of the IC-MRCI Hamiltonian elements"
-print "based on the spin-free generator"
-print ""
-print "!!!!! The operator space is L: <Psi|", E_ijab[0], E_dclk[0], "|Psi>: R !!!!!"
-print "@@@ SIGMA(Ai, Aj, Va, Vb) <-- sum_{klcd} H(Ai, Aj, Va, Vb; Vd, Vc, Al, Ak) T(Ak, Al, Vc, Vd)"
-print ""
+print("")
+print("Evaluation of the IC-MRCI Hamiltonian elements")
+print("based on the spin-free generator")
+print("")
+print("!!!!! The operator space is L: <Psi|", E_ijab[0], E_dclk[0], "|Psi>: R !!!!!")
+print("@@@ SIGMA(Ai, Aj, Va, Vb) <-- sum_{klcd} H(Ai, Aj, Va, Vb; Vd, Vc, Al, Ak) T(Ak, Al, Vc, Vd)")
+print("")
 
 result = []
 for tag_h1_p in [tag_active, tag_virtual]:
@@ -92,18 +92,18 @@ for tag_h2_p in [tag_active, tag_virtual]:
         sqa.termChop(result)                
 
 
-print ""
-print "* The one- and two-body parts ....."
-print ""
+print("")
+print("* The one- and two-body parts .....")
+print("")
 
 result = sqa.convert2Mulliken(result, 'T2')
 
 num = 0
 for t in result:
-  print num, t
+  print(num, t)
   num += 1
 
-print ""
+print("")
 
 sigma = sqa.tensor('S2', [i, j, a, b], [])
 sqa.factorize(sigma, result, 'sigma_oovv_oovv', True, 'sig', 'V2', 'T2', 'int')

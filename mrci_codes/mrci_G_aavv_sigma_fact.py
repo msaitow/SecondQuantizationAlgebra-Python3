@@ -21,13 +21,13 @@ Tsym   = sqa.symmetry((0,1, 2,3), 1)
 E_dclk = [sqa.sfExOp([d, c, l, k])]
 T_klcd = [sqa.tensor('T2', [k, l, c, d], [Tsym])]
 
-print ""
-print "Evaluation of the IC-MRCI Hamiltonian elements"
-print "based on the spin-free generator"
-print ""
-print "!!!!! The operator space is L: <Psi|",  E_dclk[0], "|Psi>: R !!!!!"
-print "@@@ SIGMA_0 <-- sum_{klcd} H(0; Vd, Vc, Al, Ak) T(Ak, Al, Vc, Vd)"
-print ""
+print("")
+print("Evaluation of the IC-MRCI Hamiltonian elements")
+print("based on the spin-free generator")
+print("")
+print("!!!!! The operator space is L: <Psi|",  E_dclk[0], "|Psi>: R !!!!!")
+print("@@@ SIGMA_0 <-- sum_{klcd} H(0; Vd, Vc, Al, Ak) T(Ak, Al, Vc, Vd)")
+print("")
 
 result = []
 for tag_h1_p in [tag_active, tag_virtual]:
@@ -56,15 +56,15 @@ for tag_h1_p in [tag_active, tag_virtual]:
         sqa.termChop(result)                
 
 
-print ""
-print "* The one-body part....."
-print ""
+print("")
+print("* The one-body part.....")
+print("")
 
 result = sqa.convert2Mulliken(result, 'T2')
 
 num = 0
 for t in result:
-    print num, t
+    print(num, t)
     num += 1
 
 #sigma = sqa.tensor('S0', [], [])
@@ -75,7 +75,12 @@ for tag_h2_p in [tag_active, tag_virtual]:
     for tag_h2_q in [tag_active, tag_virtual]:
         for tag_h2_r in [tag_active, tag_virtual]:
             for tag_h2_s in [tag_active, tag_virtual]: 
-        
+
+#for tag_h2_p in [tag_active]:
+#    for tag_h2_q in [tag_active]:
+#        for tag_h2_r in [tag_virtual]:
+#            for tag_h2_s in [tag_virtual]: 
+
                 p = sqa.index('p', [tag_h2_p], True)
                 q = sqa.index('q', [tag_h2_q], True)
                 r = sqa.index('r', [tag_h2_r], True)
@@ -91,7 +96,11 @@ for tag_h2_p in [tag_active, tag_virtual]:
         
                 for t in batch1:
                     t.contractDeltaFuncs_new()
-        
+                    #print("KORE: ",end='')
+                    #print(t)
+                    #t.makeCanonical() #
+                    #print("")
+                    
                 sqa.combineTerms(batch1)
                 sqa.termChop(batch1)
         
@@ -101,21 +110,26 @@ for tag_h2_p in [tag_active, tag_virtual]:
                 sqa.termChop(result)                
 
 
-print ""
-print "* The two-body part....."
-print ""
+print("")
+print("* The two-body part.....")
+print("")
 
-result = sqa.convert2Mulliken(result, 'T2')
+#result = sqa.convert2Mulliken(result, 'T2')
 
-num = 0
 for t in result:
-    print num, t
-    num += 1
+    #print(num, t)
+    print(t)
 
-print ""
+#print("Canonicalization ... ")
+#
+#for t in result:
+#    t.makeCanonical()
+#    #print(num, t)
+#    print(t)
 
-sigma = sqa.tensor('S0', [], [])
-sqa.factorize(sigma, result, 'sigma_G_oovv',False, 'sig', 'V2', 'T2', 'int')
+
+#sigma = sqa.tensor('S0', [], [])
+#sqa.factorize(sigma, result, 'sigma_G_oovv',False, 'sig', 'V2', 'T2', 'int')
 
 
         

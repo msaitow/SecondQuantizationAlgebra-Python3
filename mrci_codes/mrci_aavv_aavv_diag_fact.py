@@ -24,12 +24,12 @@ Dsym_c = sqa.symmetry((1,0, 3,2), 1)
 E_iajb = [sqa.sfExOp([i, j, a, b])]
 E_dlck = [sqa.sfExOp([b, a, j, i])]
 
-print ""
-print "Evaluation of the IC-MRCI Hamiltonian elements"
-print "based on the spin-free generator"
-print ""
-print "!!!!! The operator space is L: <Psi|", E_iajb[0], E_dlck[0], "|Psi>: R !!!!!"
-print ""
+print("")
+print("Evaluation of the IC-MRCI Hamiltonian elements")
+print("based on the spin-free generator")
+print("")
+print("!!!!! The operator space is L: <Psi|", E_iajb[0], E_dlck[0], "|Psi>: R !!!!!")
+print("")
 
 result = []
 for tag_h1_p in [tag_active, tag_virtual]:
@@ -87,18 +87,18 @@ for tag_h2_p in [tag_active, tag_virtual]:
                 sqa.termChop(result)                
 
 
-print ""
-print "* The one- and two-body parts....."
-print ""
+print("")
+print("* The one- and two-body parts.....")
+print("")
 
 result = sqa.convert2Mulliken(result)
 
 num = 0
 for t in result:
-    print num, t
+    print(num, t)
     num += 1
 
-print ""
+print("")
 
 Hdiag = sqa.tensor('Hdiag', [i, j, a, b], [])
 sqa.factorize(Hdiag, result, 'diag_oovv_oovv', True, 'ham', 'V', 'T', 'int')

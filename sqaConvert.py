@@ -39,10 +39,10 @@ def convert2Mulliken(inTerm, name_ofAmp = 'T'):
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   retval = []
   # Sequentially process each term provided 
@@ -62,8 +62,8 @@ def convert2Mulliken(inTerm, name_ofAmp = 'T'):
 #       print "*** " + theTensor.name
 #       print len(theTensor.indices)/2
         indices = []
-        distance = len(theTensor.indices) / 2
-        for numIndex in range(len(theTensor.indices)/2):
+        distance = int(len(theTensor.indices) / 2)
+        for numIndex in range(int(len(theTensor.indices)/2)):
           indices.append(theTensor.indices[numIndex])
           indices.append(theTensor.indices[numIndex+distance])
 
@@ -84,10 +84,10 @@ def convertF90_0(LTensor, inTerm):
   
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -102,21 +102,21 @@ def convertF90_0(LTensor, inTerm):
     # If term has both creation/destruction operators and spin free excitation operators,
     # raise an error
     if has_creDesOps:
-      raise RuntimeError, "creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
-                          "creOp/desOp are present " + "in term " + num
+      raise RuntimeError("creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
+                          "creOp/desOp are present " + "in term " + num)
 
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
-  print "!"
-  print "!  Restate my assumptions:                                                   " 
-  print "!  1, Mathematics is the language of nature.                                 " 
-  print "!  2, Everything around us can be represented and understood through numbers." 
-  print "!  3, If you graph the numbers of any system, patterns emerge.               " 
-  print "!  Therefore: There are patterns everywhere in nature.                       " 
-  print "!                                      ~~ Maximillian Cohen in Pi (film) ~~  " 
-  print "!"
+  print( "!")
+  print( "!  Restate my assumptions:                                                   ")
+  print( "!  1, Mathematics is the language of nature.                                 ") 
+  print( "!  2, Everything around us can be represented and understood through numbers.") 
+  print( "!  3, If you graph the numbers of any system, patterns emerge.               ") 
+  print( "!  Therefore: There are patterns everywhere in nature.                       ") 
+  print( "!                                      ~~ Maximillian Cohen in Pi (film) ~~  ") 
+  print( "!")
 
   # First of all, make the list of all the variables used in the subsequent tensorial contraction
   union_ofIndices = set(LTensor.indices)
@@ -126,27 +126,27 @@ def convertF90_0(LTensor, inTerm):
       union_ofIndices = setIndices.union(union_ofIndices)
 
   list_ofIndices = list(union_ofIndices)
-  print "! Indices used in the contractions below ... "
+  print( "! Indices used in the contractions below ... ")
   for num in range(len(list_ofIndices)):
     thisIndex = list_ofIndices[num]
-    if num % 5 != 0: print ", s_" + thisIndex.name + ", i_" + thisIndex.name, 
+    if num % 5 != 0: print(", s_" + thisIndex.name + ", i_" + thisIndex.name, end=' ') 
     else:
-      print ""
-      print "real(kind=8) :: ",
-      print "s_" + thisIndex.name + ", i_" + thisIndex.name, 
+      print("")
+      print("real(kind=8) :: ", end=' ')
+      print("s_" + thisIndex.name + ", i_" + thisIndex.name, end=' ') 
 
-  print ""
-  print ""
+  print("")
+  print("")
 
-  print ""
+  print("")
   # Search in each term ...
   num_loops    = []
   summed_Index = []
   for numTerm in range(len(inTerm)):
     thisTerm = inTerm[numTerm]
-    print "! No.", numTerm
-    print "!", LTensor, " <-- "
-    print "!", thisTerm
+    print("! No.", numTerm)
+    print("!", LTensor, " <-- ")
+    print("!", thisTerm)
 
     # Search inbetween each tensor ...
     loop_count = 0
@@ -163,72 +163,72 @@ def convertF90_0(LTensor, inTerm):
 
     # Write down the loops over irreps ...
     for index in summed_Index:
-      print "do s_" + index.name + " = 1,nir"
+      print("do s_" + index.name + " = 1,nir")
       loop_count += 1
 
     # Write down the constraints in terms of the irreps ...
     # Conditions for the left-hand tensor
-    print "if( &"
+    print("if( &")
     thisTensor = LTensor
     if len(thisTensor.indices) == 1:   # in case of unity
-      print "S_" + thisTensor.indices[0].name + " == 0",
+      print("S_" + thisTensor.indices[0].name + " == 0", end=' ')
     elif len(thisTensor.indices) == 2: # in case of two
-      print "IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0",
+      print("IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0", end=' ')
     elif len(thisTensor.indices) == 3: # in case of three
       str  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
       str += "s_" + thisTensor.indices[2].name + ") == 0"
-      print str,
+      print(str, end=' ')
     elif len(thisTensor.indices) == 4: # in case of four
       str  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
       str += "IEOR(s_" + thisTensor.indices[2].name + ", s_" + thisTensor.indices[3].name + ")"
-      print str,
+      print(str, end=' ')
     elif len(thisTensor.indices) == 5: # in case of five
       str  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
       str += "IEOR(IEOR(s_" + thisTensor.indices[2].name + ", " + "s_" + thisTensor.indices[3].name + "),"
       str += "s_" + thisTensor.indices[4].name + ")"
-      print str,
+      print(str, end=' ')
     elif len(thisTensor.indices) == 6: # in case of six
       str  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
       str += "s_" + thisTensor.indices[2].name + ") == "
       str += "IEOR(IEOR(s_" + thisTensor.indices[3].name + ", " + "s_" + thisTensor.indices[4].name + "),"
       str += "s_" + thisTensor.indices[5].name + ")"
-      print str,
+      print(str, end=' ')
     else:
-      raise TypeError, "Number of indices in tensor must be 1 - 6"
-    print " & " 
+      raise TypeError("Number of indices in tensor must be 1 - 6")
+    print(" & ") 
     
     for numTensor in range(len(thisTerm.tensors)):
       thisTensor = thisTerm.tensors[numTensor]
       if len(thisTensor.indices) == 1:   # in case of unity
-        print "S_" + thisTensor.indices[0].name + " == 0",
+        print("S_" + thisTensor.indices[0].name + " == 0", end=' ')
       elif len(thisTensor.indices) == 2: # in case of two
-        print "IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0",
+        print("IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0", end=' ')
       elif len(thisTensor.indices) == 3: # in case of three
         str  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
         str += "s_" + thisTensor.indices[2].name + ") == 0"
-        print str,
+        print(str, end=' ')
       elif len(thisTensor.indices) == 4: # in case of four
         str  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
         str += "IEOR(s_" + thisTensor.indices[2].name + ", s_" + thisTensor.indices[3].name + ")"
-        print str,
+        print(str, end=' ')
       elif len(thisTensor.indices) == 5: # in case of five
         str  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
         str += "IEOR(IEOR(s_" + thisTensor.indices[2].name + ", " + "s_" + thisTensor.indices[3].name + "),"
         str += "s_" + thisTensor.indices[4].name + ")"
-        print str,
+        print(str, end=' ')
       elif len(thisTensor.indices) == 6: # in case of six
         str  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
         str += "s_" + thisTensor.indices[2].name + ") == "
         str += "IEOR(IEOR(s_" + thisTensor.indices[3].name + ", " + "s_" + thisTensor.indices[4].name + "),"
         str += "s_" + thisTensor.indices[5].name + ")"
-        print str,
+        print(str, end=' ')
       else:
-        raise TypeError, "Number of indices in tensor must be 1 - 6"
+        raise TypeError("Number of indices in tensor must be 1 - 6")
 
       if not numTensor == len(thisTerm.tensors) - 1:
-        print " .and. &"
+        print(" .and. &")
 
-    print ") then"
+    print(") then")
     
     # Write down the body of the tensorial contraction ...
     # *CAUTION* Only active and virtual orbitals are considered separately for now 
@@ -240,10 +240,10 @@ def convertF90_0(LTensor, inTerm):
         otype = "I_O"
       elif Index.indType[0][0] == 'virtual':
         otype = "I_V"
-      print iname + " = psym(I_BEGIN, " + otype + ", " + sname + "), psym(I_END, " + otype + ", " + sname+ ")"
+      print(iname + " = psym(I_BEGIN, " + otype + ", " + sname + "), psym(I_END, " + otype + ", " + sname+ ")")
       count += 1
     if count != loop_count:
-      raise TypeError, "Algorithmic error occured .... "
+      raise TypeError("Algorithmic error occured .... ")
 
     # As a first step of evalutation of the contraction, search the Kronecker deltas    
     for numTensor in range(len(thisTerm.tensors)):
@@ -253,7 +253,7 @@ def convertF90_0(LTensor, inTerm):
     if num_kdeltas >= 1:
       count = num_kdeltas
 #      print "num_kdeltas ", num_kdeltas # *TEST*
-      print "if(",
+      print("if(", end=' ')
       for numTensor in range(len(thisTerm.tensors)):
         thisTensor = thisTerm.tensors[numTensor]
         if thisTensor.name == 'kdelta':
@@ -262,10 +262,10 @@ def convertF90_0(LTensor, inTerm):
           count -= 1
           if   count == 0: str += ") then"
           elif count >= 1: str += " .and. & "
-          elif count >  0: raise TYpeError, "Algorithmic Error"
-          print str
+          elif count >  0: raise TYpeError("Algorithmic Error")
+          print(str)
 
-    print ""
+    print("")
     # First generate the left-hand side tensor
     nterm = LTensor.name + "_("
     for n_index in range(len(LTensor.indices)):
@@ -277,14 +277,14 @@ def convertF90_0(LTensor, inTerm):
       nterm += "i_" + LTensor.indices[-(n_index+1)].name
       if not n_index == len(LTensor.indices)-1: nterm += ", "
       else: nterm += ")"
-    print nterm + " = " + nterm + " &" 
+    print(nterm + " = " + nterm + " &") 
 
     # Generate all the tensors ...
-    if thisTerm.numConstant > 0.0: print "  + ", thisTerm.numConstant, " & "
-    else:                          print "  - ", thisTerm.numConstant, " & " 
+    if thisTerm.numConstant > 0.0: print("  + ", thisTerm.numConstant, " & ")
+    else:                          print("  - ", thisTerm.numConstant, " & ") 
 
     if len(constList) > 0: 
-      for thisConst in constList: print " * " + thisConst + " & "
+      for thisConst in constList: print(" * " + thisConst + " & ")
 
     # Generate each tensor except Kronecker deltas ....
     for numTensor in range(len(thisTerm.tensors)):
@@ -301,17 +301,17 @@ def convertF90_0(LTensor, inTerm):
         if not n_index == len(thisTensor.indices)-1: nterm += ", "
         else: nterm += ")"
       if numTensor < len(thisTerm.tensors)-1: nterm += " & " 
-      print nterm 
+      print(nterm) 
     
-    print ""
+    print("")
 
     # Closing the iteration .... 
-    if num_kdeltas >= 1: print "end if"
-    for i in range(loop_count): print "end do"
-    print "end if"
-    for i in range(loop_count): print "end do"
-    print "! Loop_count : ", loop_count
-    print ""
+    if num_kdeltas >= 1: print("end if")
+    for i in range(loop_count): print("end do")
+    print("end if")
+    for i in range(loop_count): print("end do")
+    print("! Loop_count : ", loop_count)
+    print("")
 
 
 #--------------------------------------------------------------------------------------------------
@@ -324,26 +324,26 @@ def convertF90_ERI(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_of
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string" )
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string" )
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -358,20 +358,20 @@ def convertF90_ERI(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_of
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar"      )
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -379,9 +379,9 @@ def convertF90_ERI(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_of
   extRdm4 = [0, 1]   # in case of the 4-RDM
   name_ofRdm4 = 'E4' # Name of 4-RDM
 
-  print ""
-  print "! Searching in terms .... "
-  print ""
+  print("")
+  print("! Searching in terms .... ")
+  print("")
   TermLeft    = []     # List composed of terms with neither ERI, nor 4-RDMs
   TermVc      = []     # List composed of terms that contain Vc type ERI, except those with 4-RDMs
   TermVi      = []     # List composed of terms that contain Vi type ERI, except those with 4-RDMs
@@ -411,54 +411,54 @@ def convertF90_ERI(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_of
     isVa   = False
     isRdm4 = False
 
-  print "!  **** SUMMARY *****"
-  print "! 0. Number of terms with neither ERI, nor 4-RDMs : " + str(len(TermLeft))
-  print "! 1. Number of terms with V[c*|**] and no 4-RDM   : " + str(len(TermVc))
-  print "! 2. Number of terms with V[c*|**] and 4-RDM      : " + str(len(TermVc_Rdm4))
-  print "! 3. Number of terms with V[i*|**] and no 4-RDM   : " + str(len(TermVi))
-  print "! 4. Number of terms with V[i*|**] and 4-RDM      : " + str(len(TermVi_Rdm4))
-  print "! 5. Number of terms with V[a*|**] and no 4-RDM   : " + str(len(TermVa))
-  print "! 6. Number of terms with V[a*|**] and 4-RDM      : " + str(len(TermVa_Rdm4))
-  print "! ** Number of Total terms                        : " + str(len(inTerm))
-  print ""
+  print("!  **** SUMMARY *****")
+  print("! 0. Number of terms with neither ERI, nor 4-RDMs : " + str(len(TermLeft)))
+  print("! 1. Number of terms with V[c*|**] and no 4-RDM   : " + str(len(TermVc)))
+  print("! 2. Number of terms with V[c*|**] and 4-RDM      : " + str(len(TermVc_Rdm4)))
+  print("! 3. Number of terms with V[i*|**] and no 4-RDM   : " + str(len(TermVi)))
+  print("! 4. Number of terms with V[i*|**] and 4-RDM      : " + str(len(TermVi_Rdm4)))
+  print("! 5. Number of terms with V[a*|**] and no 4-RDM   : " + str(len(TermVa)))
+  print("! 6. Number of terms with V[a*|**] and 4-RDM      : " + str(len(TermVa_Rdm4)))
+  print("! ** Number of Total terms                        : " + str(len(inTerm)))
+  print("")
   if len(TermLeft) + len(TermVc) + len(TermVi) + len(TermVa) + len(TermVc_Rdm4) + len(TermVi_Rdm4) + len(TermVa_Rdm4) != len(inTerm):
-    raise TypeError, "Algorithmic error .... "
+    raise TypeError("Algorithmic error .... ")
 
   if len(TermLeft) > 0:
-    print ""
-    print "! Converting terms with neither ERI, nor 4-RDMs ..... "
+    print("")
+    print("! Converting terms with neither ERI, nor 4-RDMs ..... ")
     convertF90_1(LTensor, TermLeft, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
   if len(TermVc) > 0:
-    print ""
-    print "! Converting terms with V[c*|**] and no 4-RDMs ..... "
+    print("")
+    print("! Converting terms with V[c*|**] and no 4-RDMs ..... ")
     convertF90_1(LTensor, TermVc, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
   if len(TermVc_Rdm4) > 0:
-    print ""
-    print "! Converting terms with V[c*|**] with 4-RDMs ..... "
+    print("")
+    print("! Converting terms with V[c*|**] with 4-RDMs ..... ")
     convertF90_1(LTensor, TermVc_Rdm4, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
   if len(TermVi) > 0:
-    print ""
-    print "! Converting terms with V[i*|**] and no 4-RDMs ..... "
+    print("")
+    print("! Converting terms with V[i*|**] and no 4-RDMs ..... ")
     convertF90_1(LTensor, TermVi, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
   if len(TermVi_Rdm4) > 0:
-    print ""
-    print "! Converting terms with V[i*|**] with 4-RDMs ..... "
+    print("")
+    print("! Converting terms with V[i*|**] with 4-RDMs ..... ")
     convertF90_1(LTensor, TermVi_Rdm4, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
   if len(TermVa) > 0:
-    print ""
-    print "! Converting terms with V[a*|**] and no 4-RDMs ..... "
+    print("")
+    print("! Converting terms with V[a*|**] and no 4-RDMs ..... ")
     convertF90_1(LTensor, TermVa, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
   if len(TermVa_Rdm4) > 0:
-    print ""
-    print "! Converting terms with V[a*|**] with 4-RDMs ..... "
+    print("")
+    print("! Converting terms with V[a*|**] with 4-RDMs ..... ")
     convertF90_1(LTensor, TermVa_Rdm4, isBareLTS, lts_name, name_ofEri, name_ofBareAmp)
-    print "! -----------------------------------------------------------------------"
+    print("! -----------------------------------------------------------------------")
 
 
 #--------------------------------------------------------------------------------------------------
@@ -473,31 +473,31 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
 
   # In case of that the LHS is a Scalar 
   if len(inTerm) == 0:
-    print "! RHS is ZERO .... "
+    print("! RHS is ZERO .... ")
     return
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string" )
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string" )
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -512,33 +512,33 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar")
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # check whether the LTensor could be a BareAmp if specified so ....
   if len(LTensor.indices) != 4 and isBareLTS:
-    raise TypeError, "LTensor could not be a BareAmpPack .... "
+    raise TypeError("LTensor could not be a BareAmpPack .... ")
 
-  print "!"
-  print "!  Restate my assumptions:                                                   " 
-  print "!  1, Mathematics is the language of nature.                                 " 
-  print "!  2, Everything around us can be represented and understood through numbers." 
-  print "!  3, If you graph the numbers of any system, patterns emerge.               " 
-  print "!  Therefore: There are patterns everywhere in nature.                       " 
-  print "!                                      ~~ Maximillian Cohen in Pi (film) ~~  " 
-  print "!"
+  print("!")
+  print("!  Restate my assumptions:                                                   ") 
+  print("!  1, Mathematics is the language of nature.                                 ") 
+  print("!  2, Everything around us can be represented and understood through numbers.") 
+  print("!  3, If you graph the numbers of any system, patterns emerge.               ") 
+  print("!  Therefore: There are patterns everywhere in nature.                       ") 
+  print("!                                      ~~ Maximillian Cohen in Pi (film) ~~  ") 
+  print("!")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -546,29 +546,29 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
   extRdm4 = [0, 1]   # in case of the 4-RDM
   name_ofRdm4 = 'E4' # Name of 4-RDM
 
-  print ""
-  print "! ---------------------------- Parameters used ------------------------------"
-  print "!"
-  print "! Whether the LHS is a BareAmpPack ....... ", isBareLTS
-  print "! LHS name ............................... ", lts_name
-  print "! Name of ERI ............................ ", name_ofEri
-  print "! Name of BareAmpPack appearing in RHS.... ", name_ofBareAmp
-  print "!"
-  print "!----------------------------------------------------------------------------"  
-  print ""
+  print("")
+  print("! ---------------------------- Parameters used ------------------------------")
+  print("!")
+  print("! Whether the LHS is a BareAmpPack ....... ", isBareLTS)
+  print("! LHS name ............................... ", lts_name)
+  print("! Name of ERI ............................ ", name_ofEri)
+  print("! Name of BareAmpPack appearing in RHS.... ", name_ofBareAmp)
+  print("!")
+  print("!----------------------------------------------------------------------------")  
+  print("")
 
   d = datetime.datetime.today()
-  print "! Generated time: " + str(d.year) + "/" + str(d.month) + "/" + str(d.day),
-  print " " + str(d.hour) + ":" + str(d.minute) + ":" + str(d.second)
-  print ""
+  print("! Generated time: " + str(d.year) + "/" + str(d.month) + "/" + str(d.day), end=' ')
+  print(" " + str(d.hour) + ":" + str(d.minute) + ":" + str(d.second))
+  print("")
 
-  print "! FEMTO BEGIN  **************************************************************" 
-  print "use comm8_module, only : symblock1, symblock2, symblock3, symblock4, symblock6"
-  print ""
-  print "implicit none"
+  print("! FEMTO BEGIN  **************************************************************") 
+  print("use comm8_module, only : symblock1, symblock2, symblock3, symblock4, symblock6")
+  print("")
+  print("implicit none")
 
   # Print all the external variables ....
-  print ""
+  print("")
   isBare = False
   isEri  = False
   isRdm4 = False
@@ -577,23 +577,23 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
       if   thisTensor.name == name_ofEri:     isEri  = True 
       elif thisTensor.name == name_ofBareAmp: isBare = True
       elif thisTensor.name == name_ofRdm4:    isRdm4 = True
-  print ""
+  print("")
 
   if isBareLTS: 
-    print "! Left tensor is BareAmp type ...."
-    print "integer, intent(in) :: " + "i" + lts_name + ", s" + lts_name
+    print("! Left tensor is BareAmp type ....")
+    print("integer, intent(in) :: " + "i" + lts_name + ", s" + lts_name)
   if isBare: 
-    print "! Amplitude is found .... " 
-    print "integer, intent(in) :: iamp, samp" # This can be different
+    print("! Amplitude is found .... ") 
+    print("integer, intent(in) :: iamp, samp") # This can be different
   if isEri:
-    print "! ERI is found .... "     
-    print "integer, intent(in) :: ieri, seri"
+    print("! ERI is found .... ")     
+    print("integer, intent(in) :: ieri, seri")
   if isRdm4:
-    print "! RDM4 is found .... "    
-    print "integer, intent(in) :: irdm1, srdm1, irdm2, srdm2"
+    print("! RDM4 is found .... ")    
+    print("integer, intent(in) :: irdm1, srdm1, irdm2, srdm2")
 
-  print "! Information of the Irreps .... "
-  print "integer, intent(inout) :: nir, nsym(3,0:nir-1), psym(3,6,0:nir-1)"  
+  print("! Information of the Irreps .... ")
+  print("integer, intent(inout) :: nir, nsym(3,0:nir-1), psym(3,6,0:nir-1)")  
 
   # Print all the name of parameters .... 
   list_ofAllConst = []
@@ -603,9 +603,9 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
 
   list_ofAllConst = list(set(list_ofAllConst))
   if len(list_ofAllConst) != 0:
-    print "! Declaration of numerical constants .... "
+    print("! Declaration of numerical constants .... ")
   for thisConst in list_ofAllConst:
-    print "real(kind=8), intent(inout) :: " + str(thisConst)
+    print("real(kind=8), intent(inout) :: " + str(thisConst))
 
   # Print all the names of tensors .....
   if isBareLTS: 
@@ -615,7 +615,7 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
   for thisTerm in inTerm:
     for thisTensor in thisTerm.tensors:
 #      print thisTensor.name # *TEST*
-      if not dict_ofAllTensors.has_key(thisTensor.name):
+      if thisTensor.name not in dict_ofAllTensors:
         if thisTensor.name == name_ofBareAmp or thisTensor.name == name_ofEri:
           dict_ofAllTensors[thisTensor.name] = 3
         elif thisTensor.name == name_ofRdm4:
@@ -624,14 +624,14 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
           dict_ofAllTensors[thisTensor.name] = len(thisTensor.indices)
 
 #  global str
-  print ""
-  print "! Declare tensors used ..."
-  print ""
-  for name in dict_ofAllTensors.keys():
+  print("")
+  print("! Declare tensors used ...")
+  print("")
+  for name in list(dict_ofAllTensors.keys()):
     if name == 'kdelta': continue
     dimTensor = dict_ofAllTensors[name]
     if dimTensor == 0:
-      print "real(kind=8)                   :: " + name + "_"
+      print("real(kind=8)                   :: " + name + "_")
       continue
     else:
       decTensor = "type(symblock" + str(dimTensor) + "), intent(inout) :: " + name + "_("    
@@ -639,8 +639,8 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
       decTensor+= "0:nir-1"
       if i == dimTensor-1: decTensor += ")"
       else:                decTensor += ", "
-    print decTensor
-  print ""
+    print(decTensor)
+  print("")
 
 #  print dict_ofAllTensors # *TEST*
 
@@ -657,31 +657,31 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
   union_ofIndices = set(list_ofIndices)
   list_ofIndices = list(union_ofIndices)
   #print list_ofIndices # *TEST*
-  print "! Indices used in the contractions as dummy ... "
+  print("! Indices used in the contractions as dummy ... ")
   for num in range(len(list_ofIndices)):
     thisName = list_ofIndices[num]
-    if num % 5 != 0: print ", s_" + thisName + ", i_" + thisName, 
+    if num % 5 != 0: print(", s_" + thisName + ", i_" + thisName, end=' ') 
     else:
-      print ""
-      print "integer :: ",
-      print "s_" + thisName + ", i_" + thisName, 
+      print("")
+      print("integer :: ", end=' ')
+      print("s_" + thisName + ", i_" + thisName, end=' ') 
 
-  print ""
-  print ""
+  print("")
+  print("")
 
   # If the LHS is a BareAmp, set so ...
   if isBareLTS == True: 
     LTensor.indices[extBare].isExt = True
 
-  print ""
+  print("")
   # Search in each term ...
   num_loops    = []
 #  summed_Index = []
   for numTerm in range(len(inTerm)):
     thisTerm = inTerm[numTerm]
-    print "! No.", numTerm
-    print "!", LTensor, " <-- "
-    print "!", thisTerm
+    print("! No.", numTerm)
+    print("!", LTensor, " <-- ")
+    print("!", thisTerm)
 
     # Dictionary that shows which index corresponds to ieri, isig, and so on ...
     extDict = {}
@@ -750,25 +750,25 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
     # Core is not considered for now
     for thisTensor in thisTerm.tensors:
       if thisTensor.name == name_ofEri:
-        print "! where i_" + thisTensor.indices[extEri].name + " in ",
+        print("! where i_" + thisTensor.indices[extEri].name + " in ", end=' ')
         if   thisTensor.indices[extEri].indType[0][0] == 'core':
-          print "{core}"
+          print("{core}")
         elif thisTensor.indices[extEri].indType[0][0] == 'active':
-          print "{occ}"
+          print("{occ}")
         elif thisTensor.indices[extEri].indType[0][0] == 'virtual':
-          print "{vir}"
-        else: raise TypeError, "Algorithmic Error"
+          print("{vir}")
+        else: raise TypeError("Algorithmic Error")
 
     # Print guard block from the inappropriate call of external loop (lts_name is fixed to "sim")
     numGuard = 0
 
     # *NEW* I think this works more generally ..... 
     for numKey in range(len(extDict)):
-      thisKey = extDict.keys()[numKey]
+      thisKey = list(extDict.keys())[numKey]
       for num in range(numKey+1,len(extDict)):
-        thatKey = extDict.keys()[num]
+        thatKey = list(extDict.keys())[num]
         if extDict[thisKey].name == extDict[thatKey].name: 
-          print "if(" + thisKey + " == " + thatKey + ") then"
+          print("if(" + thisKey + " == " + thatKey + ") then")
           numGuard += 1
     # *NEW*
 
@@ -817,8 +817,8 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
 
     # Declare the external indices ...
     if isBareLTS == True:
-      print "   s_" + LTensor.indices[extBare].name + " = s" + lts_name # This can be different one
-      print "   i_" + LTensor.indices[extBare].name + " = i" + lts_name # This can be different one
+      print("   s_" + LTensor.indices[extBare].name + " = s" + lts_name) # This can be different one
+      print("   i_" + LTensor.indices[extBare].name + " = i" + lts_name) # This can be different one
 
     countEri  = 0
     countBare = 0
@@ -826,117 +826,117 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
     for numTensor in range(len(thisTerm.tensors)):
       thisTensor = thisTerm.tensors[numTensor]
       if thisTensor.name == name_ofEri:  # in case of ERI
-        print "   s_" + thisTensor.indices[extEri].name + " = seri"
-        print "   i_" + thisTensor.indices[extEri].name + " = ieri"
+        print("   s_" + thisTensor.indices[extEri].name + " = seri")
+        print("   i_" + thisTensor.indices[extEri].name + " = ieri")
         countEri += 1
       if thisTensor.name == name_ofBareAmp: # in case of BareAmp
-        print "   s_" + thisTensor.indices[extBare].name + " = samp" # This can be different one
-        print "   i_" + thisTensor.indices[extBare].name + " = iamp" # This can be different one
+        print("   s_" + thisTensor.indices[extBare].name + " = samp") # This can be different one
+        print("   i_" + thisTensor.indices[extBare].name + " = iamp") # This can be different one
         countBare += 1 
       if thisTensor.name == name_ofRdm4:  # in case of RDM4
-        print "   s_" + thisTensor.indices[extRdm4[0]].name + " = srdm1"
-        print "   i_" + thisTensor.indices[extRdm4[0]].name + " = irdm1"
-        print "   s_" + thisTensor.indices[extRdm4[1]].name + " = srdm2"
-        print "   i_" + thisTensor.indices[extRdm4[1]].name + " = irdm2"
+        print("   s_" + thisTensor.indices[extRdm4[0]].name + " = srdm1")
+        print("   i_" + thisTensor.indices[extRdm4[0]].name + " = irdm1")
+        print("   s_" + thisTensor.indices[extRdm4[1]].name + " = srdm2")
+        print("   i_" + thisTensor.indices[extRdm4[1]].name + " = irdm2")
         countRdm4 += 1
       if countEri > 1 or countBare > 1 or countRdm4 > 1:
-        raise TypeError, "Algorithmic error..."
+        raise TypeError("Algorithmic error...")
 
     # Write down the loops over irreps ...
     for index in summed_Index:
       if index.isExt == True:
  #       print "**** " + index.name # *TEST* 
         continue      
-      print "do s_" + index.name + " = 0, nir-1"
+      print("do s_" + index.name + " = 0, nir-1")
       loop_count += 1
 
     # Write down the constraints in terms of the irreps ...
     # Conditions for the left-hand tensor
-    print "if( &"
+    print("if( &")
     thisTensor = LTensor
     if len(thisTensor.indices) == 1:   # in case of unity
-      print "S_" + thisTensor.indices[0].name + " == 0",
+      print("S_" + thisTensor.indices[0].name + " == 0", end=' ')
     elif len(thisTensor.indices) == 2: # in case of two
-      print "IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0",
+      print("IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0", end=' ')
     elif len(thisTensor.indices) == 3: # in case of three
       cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
       cstr += "s_" + thisTensor.indices[2].name + ") == 0"
-      print cstr,
+      print(cstr, end=' ')
     elif len(thisTensor.indices) == 4: # in case of four
       cstr  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
       cstr += "IEOR(s_" + thisTensor.indices[2].name + ", s_" + thisTensor.indices[3].name + ")"
-      print cstr,
+      print(cstr, end=' ')
     elif len(thisTensor.indices) == 5: # in case of five
       cstr  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
       cstr += "IEOR(IEOR(s_" + thisTensor.indices[2].name + ", " + "s_" + thisTensor.indices[3].name + "),"
       cstr += "s_" + thisTensor.indices[4].name + ")"
-      print cstr,
+      print(cstr, end=' ')
     elif len(thisTensor.indices) == 6: # in case of six
       cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
       cstr += "s_" + thisTensor.indices[2].name + ") == "
       cstr += "IEOR(IEOR(s_" + thisTensor.indices[3].name + ", " + "s_" + thisTensor.indices[4].name + "),"
       cstr += "s_" + thisTensor.indices[5].name + ")"
-      print cstr,
+      print(cstr, end=' ')
     elif len(thisTensor.indices) == 7: # in case of seven
       cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
       cstr += "s_" + thisTensor.indices[2].name + ") == "
       cstr += "IEOR(IEOR(s_" + thisTensor.indices[3].name + ", " + "s_" + thisTensor.indices[4].name + "),"
       cstr += "IEOR(s_" + thisTensor.indices[5].name + ", " + "s_" + thisTensor.indices[5].name + ")"
-      print cstr,
+      print(cstr, end=' ')
     elif len(thisTensor.indices) == 8: # in case of eight (allowed only for 4-RDM)
       cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
       cstr +=      "IEOR(s_" + thisTensor.indices[2].name + ", " + "s_" + thisTensor.indices[3].name + ")) == "
       cstr += "IEOR(IEOR(s_" + thisTensor.indices[4].name + ", " + "s_" + thisTensor.indices[5].name + "),"
       cstr +=      "IEOR(s_" + thisTensor.indices[6].name + ", " + "s_" + thisTensor.indices[7].name + "))"
-      print cstr,
+      print(cstr, end=' ')
     elif len(thisTensor.indices) != 0: # in case of scalar:
-      raise TypeError, "Number of indices in tensor must be 0 - 8"
-    if len(thisTensor.indices) != 0: print " .and. & " 
+      raise TypeError("Number of indices in tensor must be 0 - 8")
+    if len(thisTensor.indices) != 0: print(" .and. & ") 
     
     for numTensor in range(len(thisTerm.tensors)):
       thisTensor = thisTerm.tensors[numTensor]
       if len(thisTensor.indices) == 1:   # in case of unity
-        print "S_" + thisTensor.indices[0].name + " == 0",
+        print("S_" + thisTensor.indices[0].name + " == 0", end=' ')
       elif len(thisTensor.indices) == 2: # in case of two
-        print "IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0",
+        print("IEOR(" + "S_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + ") == 0", end=' ')
       elif len(thisTensor.indices) == 3: # in case of three
         cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
         cstr += "s_" + thisTensor.indices[2].name + ") == 0"
-        print cstr,
+        print(cstr, end=' ')
       elif len(thisTensor.indices) == 4: # in case of four
         cstr  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
         cstr += "IEOR(s_" + thisTensor.indices[2].name + ", s_" + thisTensor.indices[3].name + ")"
-        print cstr,
+        print(cstr, end=' ')
       elif len(thisTensor.indices) == 5: # in case of five
         cstr  = "IEOR(s_" + thisTensor.indices[0].name + ", s_" + thisTensor.indices[1].name + ") == "
         cstr += "IEOR(IEOR(s_" + thisTensor.indices[2].name + ", " + "s_" + thisTensor.indices[3].name + "),"
         cstr += "s_" + thisTensor.indices[4].name + ")"
-        print cstr,
+        print(cstr, end=' ')
       elif len(thisTensor.indices) == 6: # in case of six
         cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
         cstr += "s_" + thisTensor.indices[2].name + ") == "
         cstr += "IEOR(IEOR(s_" + thisTensor.indices[3].name + ", " + "s_" + thisTensor.indices[4].name + "),"
         cstr += "s_" + thisTensor.indices[5].name + ")"
-        print cstr,
+        print(cstr, end=' ')
       elif len(thisTensor.indices) == 7: # in case of seven
         cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
         cstr += "s_" + thisTensor.indices[2].name + ") == "
         cstr += "IEOR(IEOR(s_" + thisTensor.indices[3].name + ", " + "s_" + thisTensor.indices[4].name + "),"
         cstr += "IEOR(s_" + thisTensor.indices[5].name + ", " + "s_" + thisTensor.indices[5].name + ")"
-        print cstr,
+        print(cstr, end=' ')
       elif len(thisTensor.indices) == 8: # in case of eight (allowed only for 4-RDM)
         cstr  = "IEOR(IEOR(s_" + thisTensor.indices[0].name + ", " + "s_" + thisTensor.indices[1].name + "),"
         cstr +=      "IEOR(s_" + thisTensor.indices[2].name + ", " + "s_" + thisTensor.indices[3].name + ")) == "
         cstr += "IEOR(IEOR(s_" + thisTensor.indices[4].name + ", " + "s_" + thisTensor.indices[5].name + "),"
         cstr +=      "IEOR(s_" + thisTensor.indices[6].name + ", " + "s_" + thisTensor.indices[7].name + "))"
-        print cstr,
+        print(cstr, end=' ')
       else:
-        raise TypeError, "Number of indices in tensor must be 1 - 8"
+        raise TypeError("Number of indices in tensor must be 1 - 8")
 
       if not numTensor == len(thisTerm.tensors) - 1:
-        print " .and. &"
+        print(" .and. &")
 
-    print ") then"
+    print(") then")
     
     # Write down the body of the tensorial contraction ...
     # *CAUTION* Only active and virtual orbitals are considered separately for now 
@@ -953,10 +953,10 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
         otype = "I_O"
       elif Index.indType[0][0] == 'virtual':
         otype = "I_V"
-      print "do " + iname + " = psym(I_BEGIN, " + otype + ", " + sname + "), psym(I_END, " + otype + ", " + sname+ ")"
+      print("do " + iname + " = psym(I_BEGIN, " + otype + ", " + sname + "), psym(I_END, " + otype + ", " + sname+ ")")
       count += 1
     if count != loop_count:
-      raise TypeError, "Algorithmic error occured .... "
+      raise TypeError("Algorithmic error occured .... ")
 
     # As a first step of evalutation of the contraction, search the Kronecker deltas    
     for numTensor in range(len(thisTerm.tensors)):
@@ -966,7 +966,7 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
     if num_kdeltas >= 1:
       count = num_kdeltas
 #      print "num_kdeltas ", num_kdeltas # *TEST*
-      print "if(",
+      print("if(", end=' ')
       for numTensor in range(len(thisTerm.tensors)):
         thisTensor = thisTerm.tensors[numTensor]
         if thisTensor.name == 'kdelta':
@@ -975,10 +975,10 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
           count -= 1
           if   count == 0: cstr += ") then"
           elif count >= 1: cstr += " .and. & "
-          elif count >  0: raise TYpeError, "Algorithmic Error"
-          print cstr
+          elif count >  0: raise TypeError("Algorithmic Error")
+          print(cstr)
 
-    print ""
+    print("")
 
     # First generate the left-hand side tensor
     # Make list of the indices which are of *NOT* external
@@ -1018,15 +1018,15 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
         nterm += "i_" + LIndList[-(n_index+1)].name
         if not n_index == len(LIndList)-1: nterm += ", "
         else: nterm += ")"
-      print nterm + " = " + nterm + " &"
-    else: print LTensor.name + "_ = " + LTensor.name + "_ &"  # in case of Scalar  
+      print(nterm + " = " + nterm + " &")
+    else: print(LTensor.name + "_ = " + LTensor.name + "_ &")  # in case of Scalar  
 
     # Generate all the tensors ...
-    if thisTerm.numConstant > 0.0: print "  + " + str(       thisTerm.numConstant) + " & "
-    else:                          print "  - " + str((-1.0)*thisTerm.numConstant) + " & " 
+    if thisTerm.numConstant > 0.0: print("  + " + str(       thisTerm.numConstant) + " & ")
+    else:                          print("  - " + str((-1.0)*thisTerm.numConstant) + " & ") 
 
     if len(thisTerm.constants) > 0: 
-      for thisConst in thisTerm.constants: print "  * " + thisConst + " & "
+      for thisConst in thisTerm.constants: print("  * " + thisConst + " & ")
 
     # Generate each tensor except Kronecker deltas ....
     for numTensor in range(len(thisTerm.tensors)):
@@ -1055,7 +1055,7 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
           if (n_index != extRdm4[0]) and (n_index != extRdm4[1]): 
             RIndList.append(thisIndex)
             dummy_count += 1
-        if(dummy_count > 6): raise TypeError, "4-RDMs must have at least 2 external indices" 
+        if(dummy_count > 6): raise TypeError("4-RDMs must have at least 2 external indices" )
 
 #       elif:
 #         RIndTest = []
@@ -1073,24 +1073,24 @@ def convertF90_1(LTensor, inTerm, isBareLTS = False, lts_name = 'sig', name_ofEr
         if not n_index == len(RIndList)-1: nterm += ", "
         else: nterm += ")"
       if numTensor != len(thisTerm.tensors)-1: nterm += " & " 
-      print nterm 
+      print(nterm) 
     
-    print ""
+    print("")
 
     # Closing the iteration .... 
-    if num_kdeltas >= 1: print "end if ! Kdeltas"                       # Kronecker deltas
-    for i in range(loop_count): print "end do ! Irrep loop"             # Irrep loops 
-    print "end if ! Irrep Cond"                                         # Irrep constraints
-    for i in range(loop_count): print "end do ! Orbital loop"           # Orbital loops
-    for i in range(numGuard) : print "end if ! Guard for external loop" # Guard for external loops
-    print "! Loop_count     : ", loop_count
-    print "! External_count : ", len(extIndices)
-    print "! Total_count    : ", len(summed_Index)
+    if num_kdeltas >= 1: print("end if ! Kdeltas")                       # Kronecker deltas
+    for i in range(loop_count): print("end do ! Irrep loop")             # Irrep loops 
+    print("end if ! Irrep Cond")                                         # Irrep constraints
+    for i in range(loop_count): print("end do ! Orbital loop")           # Orbital loops
+    for i in range(numGuard) : print("end if ! Guard for external loop") # Guard for external loops
+    print("! Loop_count     : ", loop_count)
+    print("! External_count : ", len(extIndices))
+    print("! Total_count    : ", len(summed_Index))
     if loop_count + len(extIndices) != len(summed_Index):
-      raise TypeError, "Algorithmic Error, Somethig is wrong !!!"
-    print ""
-    print ""
-  print "! FEMTO END    **************************************************************" 
+      raise TypeError("Algorithmic Error, Somethig is wrong !!!")
+    print("")
+    print("")
+  print("! FEMTO END    **************************************************************") 
 
 
 #--------------------------------------------------------------------------------------------------
@@ -1102,29 +1102,29 @@ def convertTeX(LTensor, inTerm, Term_per_row = 4):
 
   # In case of that the LHS is a Scalar 
   if len(inTerm) == 0:
-    print "! RHS is ZERO .... "
+    print("! RHS is ZERO .... ")
     return
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
 
   nameRDMs = ["E2", "E3", "E4", "E5", "E6", "E7" ]
 
-  print ""
-  print "% Tensorial equation converted into TeX form ..... "
-  print "%"
-  print "% ", LTensor, "<-- "
+  print("")
+  print("% Tensorial equation converted into TeX form ..... ")
+  print("%")
+  print("% ", LTensor, "<-- ")
   for thisTensor in inTerm:
-    print "% ", thisTensor
-  print "" 
+    print("% ", thisTensor)
+  print("") 
 
   # Print name of Left tensor
   LTname = LTensor.name
@@ -1136,7 +1136,7 @@ def convertTeX(LTensor, inTerm, Term_per_row = 4):
     elif numIndex == len(LTensor.indices)   - 1: LTname += "}"
     #else: LTname += ", "
 
-  print LTname + " &+\!= ",
+  print(LTname + " &+\!= ", end=' ')
 
   # print all the terms on the RHS side ....
   isBroken = False
@@ -1182,7 +1182,7 @@ def convertTeX(LTensor, inTerm, Term_per_row = 4):
       if   AllSpaces[numIndex] == 'core':    IndName = 'c_{' + str(C_Count) + '}'; C_Count += 1
       elif AllSpaces[numIndex] == 'active':  IndName = 'o_{' + str(O_Count) + '}'; O_Count += 1
       elif AllSpaces[numIndex] == 'virtual': IndName = 'v_{' + str(V_Count) + '}'; V_Count += 1
-      else: raise TypeError, "Algorithmic Error"
+      else: raise TypeError("Algorithmic Error")
 
       for thisTensor in thisTerm.tensors:
         for thisIndex in thisTensor.indices:
@@ -1203,10 +1203,10 @@ def convertTeX(LTensor, inTerm, Term_per_row = 4):
         if   numIndex == len(thisTensor.indices)/2-1: thisLabel += "}_{"
         elif numIndex == len(thisTensor.indices)  -1: thisLabel += "} "
 
-    if (numTerm+1)%Term_per_row == 0: print thisLabel + "\\\\"; isBroken = True
-    else:                             print thisLabel,      ; isBroken = False     
+    if (numTerm+1)%Term_per_row == 0: print(thisLabel + "\\\\"); isBroken = True
+    else:                             print(thisLabel, end=' ')      ; isBroken = False     
   
-  if numTerm != len(inTerm)-1: raise TypeError, "Algorithmic Error"
+  if numTerm != len(inTerm)-1: raise TypeError("Algorithmic Error")
 
 
   
@@ -1222,34 +1222,34 @@ def factorize(LTensor, inTerm, title, isBareLTS = False, lts_name = 'sig', name_
 
   # In case of that the LHS is a Scalar 
   if len(inTerm) == 0:
-    print "! RHS is ZERO .... "
+    print("! RHS is ZERO .... ")
     return
   # Check if title is given correctly
   if not type(title) == type('aaa'):
-    raise TypeError, "title should be given as a string"
+    raise TypeError("title should be given as a string")
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string" )
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string" )
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -1264,28 +1264,28 @@ def factorize(LTensor, inTerm, title, isBareLTS = False, lts_name = 'sig', name_
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar"      )
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # check whether the LTensor could be a BareAmp if specified so ....
   if len(LTensor.indices) != 4 and isBareLTS:
-    raise TypeError, "LTensor could not be a BareAmpPack .... "
+    raise TypeError("LTensor could not be a BareAmpPack .... ")
 
   # check whether priority is string ....
   if not isinstance(priority, type('a')):
-    raise TypeError, "Priority must given as a string"
+    raise TypeError("Priority must given as a string")
 
   # Output for declarations for Fortaran codes ....
   CHname = "c_" + title + ".h"
@@ -1478,16 +1478,16 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 """ % (title, name_ofBareAmp, LTensor.name, name_ofEri, name_ofBareAmp, name_ofEri, name_ofEri))
 
   else:
-    raise RunTimeError, " I don't know how to handle this case ....  "
+    raise RunTimeError(" I don't know how to handle this case ....  ")
 
-  print "!"
-  print "!  Restate my assumptions:                                                   " 
-  print "!  1, Mathematics is the language of nature.                                 " 
-  print "!  2, Everything around us can be represented and understood through numbers." 
-  print "!  3, If you graph the numbers of any system, patterns emerge.               " 
-  print "!  Therefore: There are patterns everywhere in nature.                       " 
-  print "!                                      ~~ Maximillian Cohen in Pi (film) ~~  " 
-  print "!"
+  print("!")
+  print("!  Restate my assumptions:                                                   ") 
+  print("!  1, Mathematics is the language of nature.                                 ") 
+  print("!  2, Everything around us can be represented and understood through numbers.") 
+  print("!  3, If you graph the numbers of any system, patterns emerge.               ") 
+  print("!  Therefore: There are patterns everywhere in nature.                       ") 
+  print("!                                      ~~ Maximillian Cohen in Pi (film) ~~  ") 
+  print("!")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -1522,7 +1522,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
   # Whether a kdelta is killed (and as a consequences, indices in LTensor are altered) or not
   isKDkilled = False
 
-  print ""
+  print("")
   # Search in each term ...
   num_loops    = []
   for numTerm in range(len(inTerm)):
@@ -1575,7 +1575,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
           thisTerm.tensors.remove(t)
               
         else: 
-          raise TypeError, "I cannot handle Kronecker delta with purely dummy indices"
+          raise TypeError("I cannot handle Kronecker delta with purely dummy indices")
 
     set_V  = False; num_V  = False
     set_T  = False; num_T  = False
@@ -1653,9 +1653,9 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
           if set_D4: break    
         if set_D4: break          
 
-    print "! No.", numTerm
-    print "!", LTensor, " <-- "
-    print "!", thisTerm
+    print("! No.", numTerm)
+    print("!", LTensor, " <-- ")
+    print("!", thisTerm)
 
     # Dictionary that shows which index corresponds to ieri, isig, and so on ...
     extDict = {}
@@ -1754,7 +1754,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 #         print                             # *TEST*   
         
         Interm = tensor('X', Interm_Index[:])        
-        print "Case " + str(numCase) + " ..... ", Interm, " <----- ", Pattern
+        print("Case " + str(numCase) + " ..... ", Interm, " <----- ", Pattern)
 
 #         print "***** 3 IntermIndex *****" # *TEST*
 #         for i in Interm.indices:          # *TEST*
@@ -1786,7 +1786,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
           nCore = nCtemp
           nOcc  = nOtemp
           nVir  = nVtemp
-        print "! Polynomial order   is O(c^" + str(nCore) + "o^" + str(nOcc) + "v^" + str(nVir) + ")"
+        print("! Polynomial order   is O(c^" + str(nCore) + "o^" + str(nOcc) + "v^" + str(nVir) + ")")
 
         thisCase = {}
         # The heaviest one shoul be stored as polynomial order ....
@@ -1802,8 +1802,8 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
           if   i.indType[0][0] == 'core':    nCore += 1
           elif i.indType[0][0] == 'active':  nOcc  += 1
           elif i.indType[0][0] == 'virtual': nVir  += 1
-        print "! Memory requirement is O(c^" + str(nCore) + "o^" + str(nOcc) + "v^" + str(nVir) + ")"
-        print ""
+        print("! Memory requirement is O(c^" + str(nCore) + "o^" + str(nOcc) + "v^" + str(nVir) + ")")
+        print("")
 
         # Store the information on the pattern of formation of the intermediate .... 
         thisCase['Intermediate'] = Interm
@@ -1847,14 +1847,14 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
           intReq_V = caseTensor[theCase]['Poly_V']
           int_prior = theCase
 
-    if mem_prior != int_prior: print "\n! Conflict between optimal memory requirement and polynomial order ...."
+    if mem_prior != int_prior: print("\n! Conflict between optimal memory requirement and polynomial order ....")
 
     if   priority == 'mem':
       opt_prior = int_prior # This can be switched ..... 
     elif priority == 'int':
       opt_prior = mem_prior # This can be switched ..... 
     else:
-      raise TypeError, "priority should be given either mem or int"
+      raise TypeError("priority should be given either mem or int")
 
 # *NO_GOOD*     # Check the bug!!!
 # *NO_GOOD*     # If the leg of ERI cannot be matched with that of Sigma, rotate leg of Sigma if possible ....
@@ -1914,34 +1914,34 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 # *NO_GOOD*             elif t2.name == name_ofBareAmp and LTensor.indices[extBare-1] == t2.indices[extBare]:
 # *NO_GOOD*               LTensor.indices[extBare-1].isExt = True
         
-    print "! ----------------------------------"
-    print "! set_V       : ", set_V      # *TEST*
-    print "! set_T       : ", set_T      # *TEST*
-    print "! set_D4      : ", set_D4     # *TEST*
-    print "! isRotated   : ", isRotated  # *TEST*
-    print "! isKD_killed : ", isKDkilled # *TEST* 
-    print "! ----------------------------------"
+    print("! ----------------------------------")
+    print("! set_V       : ", set_V)      # *TEST*
+    print("! set_T       : ", set_T)      # *TEST*
+    print("! set_D4      : ", set_D4)     # *TEST*
+    print("! isRotated   : ", isRotated)  # *TEST*
+    print("! isKD_killed : ", isKDkilled) # *TEST* 
+    print("! ----------------------------------")
 
     CPfile.write("\n\n  {\n  // No.%s\n" % numTerm)
 
     if set_V and set_D4:
-      raise RunTimeError, "Algorithmic Error"
+      raise RunTimeError("Algorithmic Error")
 
-    print ""
-    print "! The optimal choice is .... "
+    print("")
+    print("! The optimal choice is .... ")
     if set(LTensor.indices) == set(caseTensor[opt_prior]['Intermediate'].indices):
       caseTensor[opt_prior]['Intermediate'] = LTensor
       caseTensor[opt_prior]['Tensors']      = thisTerm
-    print caseTensor[opt_prior]['Intermediate'], " <-- ", caseTensor[opt_prior]['Tensors'],
-    print ""
+    print(caseTensor[opt_prior]['Intermediate'], " <-- ", caseTensor[opt_prior]['Tensors'], end=' ')
+    print("")
 
     # Substitute the intermediate into the tensorial equation ....
     if not set(LTensor.indices) == set(caseTensor[opt_prior]['Intermediate'].indices):
       for Tensor1 in caseTensor[opt_prior]['Tensors'].tensors:
         thisTerm.tensors.remove(Tensor1)
       thisTerm.tensors.append(caseTensor[opt_prior]['Intermediate'].copy())
-      print LTensor, " <-- ", thisTerm
-    print ""
+      print(LTensor, " <-- ", thisTerm)
+    print("")
 
 #     print "***** 4 IntermIndex *****" # *TEST*
 #     for t in thisTerm.tensors:
@@ -1950,11 +1950,11 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 #         print i.name, i.isExt 
 
     # Print all the information on the factorization ....
-    print "! Scaling       : O(c^" + str(caseTensor[opt_prior]['Poly_C']) + " o^" + str(caseTensor[opt_prior]['Poly_O']) + " v^" + str(caseTensor[opt_prior]['Poly_V']) + ")"
-    print "! Max size of X : c^"   + str(caseTensor[opt_prior]['Int_C'])  + " o^" + str(caseTensor[opt_prior]['Int_O'])  + " v^" + str(caseTensor[opt_prior]['Int_V'])
+    print("! Scaling       : O(c^" + str(caseTensor[opt_prior]['Poly_C']) + " o^" + str(caseTensor[opt_prior]['Poly_O']) + " v^" + str(caseTensor[opt_prior]['Poly_V']) + ")")
+    print("! Max size of X : c^"   + str(caseTensor[opt_prior]['Int_C'])  + " o^" + str(caseTensor[opt_prior]['Int_O'])  + " v^" + str(caseTensor[opt_prior]['Int_V']))
 
     Indent = ""
-    print "\n! * Begin scaling analysis .... *\n"
+    print("\n! * Begin scaling analysis .... *\n")
 
     # Starts the first contraction .... 
     LoopCount = 0
@@ -2048,8 +2048,8 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 #           MaximizeEri =True
 # #          print V2
 #         if MaximizeEri: break
-      print "! Intermediate is not processed in ad hoc fashion .... "
-      print ""
+      print("! Intermediate is not processed in ad hoc fashion .... ")
+      print("")
 #      print chr(7), 
 
     # Order of the leg index of LHS has to be top
@@ -2087,29 +2087,29 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
       if   i.indType[0][0] == 'core':    Label = "{core}"
       elif i.indType[0][0] == 'active':  Label = "{occ}"
       elif i.indType[0][0] == 'virtual': Label = "{vir}"
-      print Indent[LoopCount] + "for " + i.name + " in " + Label + ":"
+      print(Indent[LoopCount] + "for " + i.name + " in " + Label + ":")
       CPloop(Indent[LoopCount], i, CPfile)
       LoopCount += 1
       Declared.append(i)
       if isBareLTS:
         if   i == LTensor.indices[extBare]:
-          print Indent[LoopCount] + "Read " + LTensor.name + " from Disk or GA for " + LTensor.indices[extBare].name 
+          print(Indent[LoopCount] + "Read " + LTensor.name + " from Disk or GA for " + LTensor.indices[extBare].name) 
           ReadRetval(Indent[LoopCount], LTensor, extBare, CPfile)
           SigmaCount = LoopCount
       for t in caseTensor[opt_prior]['Tensors'].tensors:
         if   t.name == name_ofEri     and i == t.indices[extEri]:
-          print Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[extEri].name
+          print(Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[extEri].name)
           ReadERI(Indent[LoopCount], t, extEri, CPfile)
           t_list.append(t.name)
         elif t.name == name_ofBareAmp and i == t.indices[extBare]:         
-          print Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[extBare].name
+          print(Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[extBare].name)
           ReadBare(Indent[LoopCount], t, extBare, CPfile)
           t_list.append(t.name)
 
     # In case of 4-RDM
     for t in caseTensor[opt_prior]['Tensors'].tensors:
       if t.name == name_ofRdm4 and t.indices[0] in O1 and t.indices[1] in O1:
-        print Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[0].name + "," + t.indices[1].name
+        print(Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[0].name + "," + t.indices[1].name)
         ReadD4(Indent[LoopCount], t, extRdm4, CPfile)
         D4Count = LoopCount
         t_list.append(t.name)         
@@ -2130,7 +2130,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
     if not Ccount and not Ocount and not Vcount: printVar += "scalar"
     else: printVar += " tensor"    
     if not set(LTensor.indices) == set(caseTensor[opt_prior]['Intermediate'].indices):
-      print printVar
+      print(printVar)
 
       Var = []
       for c in range(Ccount): Var.append("nclosed")
@@ -2156,10 +2156,10 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 
     intSize = (numCore**Ccount) * (numOcc**Ocount) * (numVirt**Vcount)
     if intSize > MaxSize:
-      print ""
-      print "!!!! *WARNING* Size of intermediate exceeds the MaxSize !!!!"
-      print chr(7)*100,
-      print ""
+      print("")
+      print("!!!! *WARNING* Size of intermediate exceeds the MaxSize !!!!")
+      print(chr(7)*100, end=' ')
+      print("")
 
     O2     = []
     printVar = ""
@@ -2214,7 +2214,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
             D4Count = LoopCount
             t_list.append(t.name)
       
-    print printVar,
+    print(printVar, end=' ')
 
     iCount = 0
     T1name = caseTensor[opt_prior]['Intermediate'].name + "_("
@@ -2279,7 +2279,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
       convertCpp_body(caseTensor[opt_prior]['Intermediate'], [caseTensor[opt_prior]['Tensors']], title1if, \
         CPfile, DecFirst, Indent[LoopCount], False, lts_name, name_ofEri, name_ofBareAmp) # *TEST*
 
-    print Indent[LoopCount] + T1name + " += " + Constnames + Sumname + T2names    
+    print(Indent[LoopCount] + T1name + " += " + Constnames + Sumname + T2names)    
 
     if set(LTensor.indices) == set(caseTensor[opt_prior]['Intermediate'].indices): 
       if isBareLTS:
@@ -2294,16 +2294,16 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
         LTname += ")"
 
         AccBare(Indent[SigmaCount], LTensor, extBare, CPfile)
-        print 
-        print Indent[SigmaCount] + "Accumulate " + LTname + " for " + LTensor.indices[extBare].name 
+        print() 
+        print(Indent[SigmaCount] + "Accumulate " + LTname + " for " + LTensor.indices[extBare].name) 
 
-      print ""
-      print "! ----------------------------------------------------------------------"
-      print "! ----------------------------------------------------------------------"
-      print ""
+      print("")
+      print("! ----------------------------------------------------------------------")
+      print("! ----------------------------------------------------------------------")
+      print("")
 
       if SigmaCount == False:
-        raise RunTimeError, "Algorithmic Error"
+        raise RunTimeError("Algorithmic Error")
 
       if isRotated and isBareLTS:
         LTensor.indices[extBare].isExt = False
@@ -2329,7 +2329,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
   
       CPfile.write("  }\n")
       continue
-    else:     print ""
+    else:     print("")
 
     #print D4Count
     for i in range(LoopCount, len(O1), -1):
@@ -2403,7 +2403,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 
       printVar += Indent[LoopCount] + "Read " + LTensor.name + " from Disk or GA for " + LTensor.indices[extBare].name       
       ReadRetval(Indent[LoopCount], LTensor, extBare, CPfile)
-      print printVar
+      print(printVar)
       SigmaCount = LoopCount
 
     O4 = []
@@ -2421,7 +2421,7 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
       elif i.indType[0][0] == 'virtual': Label = "{vir}"
 
       if not i in Declared: 
-        print Indent[LoopCount] + "for " + i.name + " in " + Label
+        print(Indent[LoopCount] + "for " + i.name + " in " + Label)
         CPloop(Indent[LoopCount], i, CPfile)
         LoopCount += 1
         Declared.append(i)
@@ -2431,18 +2431,18 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
           printVar += Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[extEri].name       
           ReadERI(Indent[LoopCount], t, extEri, CPfile)
           t_list.append(t.name)
-          print printVar
+          print(printVar)
         elif t.name == name_ofBareAmp and not t.name in t_list:        
           printVar += Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[extBare].name       
           ReadBare(Indent[LoopCount], t, extBare, CPfile)
           t_list.append(t.name)
-          print printVar
+          print(printVar)
         elif t.name == name_ofRdm4    and not t.name in t_list and t.indices[0] in Declared and t.indices[1] in Declared:        
           printVar += Indent[LoopCount] + "Read " + t.name + " from Disk or GA for " + t.indices[0].name + "," + t.indices[1].name       
           ReadD4(Indent[LoopCount], t, extRdm4, CPfile)
           D4Count = LoopCount
           t_list.append(t.name)
-          print printVar
+          print(printVar)
         printVar = ""
       
     IndList = set(LTensor.indices)
@@ -2506,10 +2506,10 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 
     # Call the Fortran function
     convertCpp_body(LTensor, [thisTerm], title2if, CPfile, DecSecond, Indent[LoopCount], isBareLTS, lts_name, name_ofEri, name_ofBareAmp) # *TEST*
-    print Indent[LoopCount] + LTname + " += " + Constnames + Sumname + T2names
+    print(Indent[LoopCount] + LTname + " += " + Constnames + Sumname + T2names)
     if isBareLTS:
-      print 
-      print Indent[SigmaCount] + "Accumulate " + LTname + " for " + LTensor.indices[extBare].name 
+      print() 
+      print(Indent[SigmaCount] + "Accumulate " + LTname + " for " + LTensor.indices[extBare].name) 
 
     for i in range(LoopCount, 0, -1):
       if isBareLTS and i == SigmaCount: AccBare(Indent[SigmaCount], LTensor, extBare, CPfile)
@@ -2519,13 +2519,13 @@ double orz::ct::%s(const orz::ct::Input &ctinp,
 
     CPfile.write("  }\n")
 
-    print ""
-    print "! ----------------------------------------------------------------------"
-    print "! ----------------------------------------------------------------------"
-    print ""
+    print("")
+    print("! ----------------------------------------------------------------------")
+    print("! ----------------------------------------------------------------------")
+    print("")
 
     if SigmaCount == False and isBareLTS:
-      raise RunTimeError, "Algorithmic Error"
+      raise RunTimeError("Algorithmic Error")
 
     if isRotated and isBareLTS:
       LTensor.indices[extBare].isExt = False
@@ -2572,39 +2572,39 @@ def convertF90_interface(LTensor, inTerm, title, Ffile, Declare, isBareLTS = Fal
 
   # Check is Declare is of a dictionary
   if not type(Declare) == type({}):
-    raise TypeError, "Declare should be given as a diactionary"
+    raise TypeError("Declare should be given as a diactionary")
 
   # Check if Ffile is a file object
   aaafile = open('aaa.out', 'w')
   if not type(Ffile) == type(aaafile):
-    raise TypeError, 'Ffile shoud be given as a file object'
+    raise TypeError('Ffile shoud be given as a file object')
 
   # Check if title is given correctly
   if not type(title) == type('aaa'):
-    raise TypeError, "title should be given as a atring"
+    raise TypeError("title should be given as a atring")
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string") 
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string") 
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -2619,20 +2619,20 @@ def convertF90_interface(LTensor, inTerm, title, Ffile, Declare, isBareLTS = Fal
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar")      
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -2779,7 +2779,7 @@ def convertF90_interface(LTensor, inTerm, title, Ffile, Declare, isBareLTS = Fal
     SetFunc += c + ", "
   for t in NameT:
     if t == 'kdelta': continue
-    if t in extTdict.keys():
+    if t in list(extTdict.keys()):
       name_t = extTdict[t]
       SetFunc += name_t + ", "
     else: 
@@ -2795,12 +2795,12 @@ def convertF90_interface(LTensor, inTerm, title, Ffile, Declare, isBareLTS = Fal
     elif i == "E3": SetFunc += "d3, "
     elif i == "E4": SetFunc += "d4_ij, "
     else:
-      raise TypeError, "Algorithmic Error"
+      raise TypeError("Algorithmic Error")
 
   SetFunc += "nir, nsym, psym)\n\n"
   Ffile.write( SetFunc )
 
-  for t in extTdict.keys():
+  for t in list(extTdict.keys()):
     SetDealloc = "deallocate(" + extTdict[t] + ")\n"
     Ffile.write( SetDealloc )
   Ffile.write( "\n" )
@@ -2818,39 +2818,39 @@ def convertCpp_header(LTensor, inTerm, title, CHfile, Declare, isBareLTS = False
 
   # Check is Declare is of a dictionary
   if not type(Declare) == type({}):
-    raise TypeError, "Declare should be given as a diactionary"
+    raise TypeError("Declare should be given as a diactionary")
 
   # Check if Ffile is a file object
   aaafile = open('aaa.out', 'w')
   if not type(CHfile) == type(aaafile):
-    raise TypeError, 'Ffile shoud be given as a file object'
+    raise TypeError('Ffile shoud be given as a file object')
 
   # Check if title is given correctly
   if not type(title) == type('aaa'):
-    raise TypeError, "title should be given as a atring"
+    raise TypeError("title should be given as a atring")
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string") 
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string") 
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -2865,20 +2865,20 @@ def convertCpp_header(LTensor, inTerm, title, CHfile, Declare, isBareLTS = False
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar")      
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -2923,43 +2923,43 @@ def convertCpp_body(LTensor, inTerm, title, CPfile, Declare, Indents, isBareLTS 
 
   # Check is Declare is of a dictionary
   if not type(Declare) == type({}):
-    raise TypeError, "Declare should be given as a diactionary"
+    raise TypeError("Declare should be given as a diactionary")
 
   # Check if Ffile is a file object
   aaafile = open('aaa.out', 'w')
   if not type(CPfile) == type(aaafile):
-    raise TypeError, 'CPfile shoud be given as a file object'
+    raise TypeError('CPfile shoud be given as a file object')
 
   # Check if title is given correctly
   if not type(title) == type('aaa'):
-    raise TypeError, "title should be given as a atring"
+    raise TypeError("title should be given as a atring")
 
   # Check if Indents is given correctly
   if not type(Indents) == type('aaa'):
-    raise TypeError, "Indents should be given as a atring"
+    raise TypeError("Indents should be given as a atring")
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string") 
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string") 
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -2974,20 +2974,20 @@ def convertCpp_body(LTensor, inTerm, title, CPfile, Declare, Indents, isBareLTS 
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar")      
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -3043,7 +3043,7 @@ def convertCpp_body(LTensor, inTerm, title, CPfile, Declare, Indents, isBareLTS 
       elif  not len(LTensor.indices): FuncBody += "&" + t + ", "
       else: FuncBody += t + ".cptr(), " 
     else:
-      raise TypeError, "I cannot handle this .... %s" % t
+      raise TypeError("I cannot handle this .... %s" % t)
     num += 1
 #  if len(NameT): FuncBody += "\n   "
   FuncBody += "nir, nsym, psym);\n"
@@ -3062,39 +3062,39 @@ def convertF90_ERI2(LTensor, inTerm, title, Ffile, Declare, isBareLTS = False, l
 
   # Check is Declare is of a dictionary
   if not type(Declare) == type({}):
-    raise TypeError, "Declare should be given as a diactionary"
+    raise TypeError("Declare should be given as a diactionary")
 
   # Check if Ffile is a file object
   aaafile = open('aaa.out', 'w')
   if not type(Ffile) == type(aaafile):
-    raise TypeError, 'Ffile shoud be given as a file object'
+    raise TypeError('Ffile shoud be given as a file object')
 
   # Check if title is given correctly
   if not type(title) == type('aaa'):
-    raise TypeError, "title should be given as a atring"
+    raise TypeError("title should be given as a atring")
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string") 
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string") 
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -3109,20 +3109,20 @@ def convertF90_ERI2(LTensor, inTerm, title, Ffile, Declare, isBareLTS = False, l
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORZ code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar")      
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -3176,7 +3176,7 @@ def convertF90_ERI2(LTensor, inTerm, title, Ffile, Declare, isBareLTS = False, l
 #   print "! ** Number of Total terms                        : " + str(len(inTerm))
 #   print ""
   if len(TermLeft) + len(TermVc) + len(TermVi) + len(TermVa) + len(TermVc_Rdm4) + len(TermVi_Rdm4) + len(TermVa_Rdm4) + len(Term_Rdm4)!= len(inTerm):
-    raise TypeError, "Algorithmic error .... "
+    raise TypeError("Algorithmic error .... ")
 
   if len(TermLeft) > 0:
     Ffile.write( "! Converting terms with neither ERI, nor 4-RDMs ..... \n\n" )
@@ -3221,49 +3221,49 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
 
   # Check is Declare is of a dictionary
   if not type(Declare) == type({}):
-    raise TypeError, "Declare should be given as a diactionary"
+    raise TypeError("Declare should be given as a diactionary")
 
   # Check if Ffile is a file object
   aaafile = open('aaa.out', 'w')
   if not type(F90file) == type(aaafile):
-    raise TypeError, 'Ffile shoud be given as a file object'
+    raise TypeError('Ffile shoud be given as a file object')
 
   # Check if title is given correctly
   if not type(title) == type('aaa'):
-    raise TypeError, "title should be given as a atring"
+    raise TypeError("title should be given as a atring")
 
   # In case of that the LHS is a Scalar 
   if len(inTerm) == 0:
-    print "! RHS is ZERO .... "
+    print("! RHS is ZERO .... ")
     return
 
   # Check that LTensor is of tensor class
   if not isinstance(LTensor, tensor):
-    raise TypeError, "LTensor must be a tensor object"
+    raise TypeError("LTensor must be a tensor object")
 
   # Check that isBareLTS is of boolean
   if not isinstance(isBareLTS, type(True)):
-    raise TypeError, "isBareLTS must be True, or False"
+    raise TypeError("isBareLTS must be True, or False")
 
   # Check that name_ofEri is of string
   if not isinstance(name_ofEri, type('a')):
-    raise TypeError, "name_ofEri must be a string" 
+    raise TypeError("name_ofEri must be a string") 
 
   # Check that name_ofBareAmp is of string
   if not isinstance(name_ofBareAmp, type('a')):
-    raise TypeError, "name_ofBareAmp must be a string" 
+    raise TypeError("name_ofBareAmp must be a string") 
 
   # check that inTerm is a list of terms
   if not isinstance(inTerm, type([])):
-    raise TypeError, "inTerm must be provided as a list"
+    raise TypeError("inTerm must be provided as a list")
   if not len(inTerm):
-    raise TypeError, "Length of inTerm must be 1 (for now)"
+    raise TypeError("Length of inTerm must be 1 (for now)")
   if len(inTerm[0].tensors) > 2:
-    print len(inTerm[0].tensors)
-    raise TypeError, "Number of tensors must be 2 in this code. If you wanna treat more, use convertF90_1"
+    print(len(inTerm[0].tensors))
+    raise TypeError("Number of tensors must be 2 in this code. If you wanna treat more, use convertF90_1")
   for num in range(len(inTerm)):
     if not isinstance(inTerm[num], term):
-      raise TypeError, "Each element of inTerm must be class term"
+      raise TypeError("Each element of inTerm must be class term")
   
   # determine what types of operators the term contains
   for num in range(len(inTerm)):
@@ -3278,24 +3278,24 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps:
-    raise RuntimeError, "creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
-                        "creOp/desOp are present " + "in term " + num
+    raise RuntimeError("creOp/desOp cannot be implemenented in ORz code as tensorial quantities" + \
+                        "creOp/desOp are present " + "in term " + num)
 
   # name_ofEri must be provided as a name of electron repulsion integral
   if not isinstance(name_ofEri, type("a")):
-    raise TypeError, "name_ofEri has to be provided as a charactar"
+    raise TypeError("name_ofEri has to be provided as a charactar")
 
   # names_ofBareAmp has to be given as a name of tensors in the BareAmpPack
   if not isinstance(name_ofBareAmp, type("a")):
-    raise TypeError, "names_ofAmp have to be given as a charactar"      
+    raise TypeError("names_ofAmp have to be given as a charactar")      
       
   # check that LTensor, which is supposed to represent a sigma vector, is a class tensor
   if not isinstance(inTerm[num], term):
-    raise TypeError, "LTensor must be class term"
+    raise TypeError("LTensor must be class term")
 
   # check whether the LTensor could be a BareAmp if specified so ....
   if len(LTensor.indices) != 4 and isBareLTS:
-    raise TypeError, "LTensor could not be a BareAmpPack .... "
+    raise TypeError("LTensor could not be a BareAmpPack .... ")
 
   # Order of the externally summed indices
   extEri  = 0        # in case of Eri
@@ -3372,7 +3372,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
   for thisTerm in inTerm:
     for thisTensor in thisTerm.tensors:
 #      print thisTensor.name # *TEST*
-      if not dict_ofAllTensors.has_key(thisTensor.name):
+      if thisTensor.name not in dict_ofAllTensors:
         if thisTensor.name == name_ofBareAmp or thisTensor.name == name_ofEri:
           dict_ofAllTensors[thisTensor.name] = 3
         elif thisTensor.name == name_ofRdm4:
@@ -3399,7 +3399,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
 
 #  global str
   DeclareTensor = """\n! Declare tensors used ...\n"""
-  for name in dict_ofAllTensors.keys():
+  for name in list(dict_ofAllTensors.keys()):
     if 'E' in name: printName2 += name + "_, "
     if name == 'kdelta': continue
     dimTensor = dict_ofAllTensors[name]
@@ -3510,7 +3510,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
           F90file.write( "{occ}" + "\n" )
         elif thisTensor.indices[extEri].indType[0][0] == 'virtual':
           F90file.write( "{vir}" + "\n" )
-        else: raise TypeError, "Algorithmic Error"
+        else: raise TypeError("Algorithmic Error")
 
     # Write down the loops over irreps ...
     for index in summed_Index:
@@ -3559,7 +3559,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
       cstr +=      "IEOR(s_" + thisTensor.indices[6].name + ", " + "s_" + thisTensor.indices[7].name + "))"
       F90file.write( cstr )
     elif len(thisTensor.indices) != 0: # in case of scalar:
-      raise TypeError, "Number of indices in tensor must be 0 - 8"
+      raise TypeError("Number of indices in tensor must be 0 - 8")
     if len(thisTensor.indices) != 0: F90file.write( " .and. & " + "\n" ) 
     
     for numTensor in range(len(thisTerm.tensors)):
@@ -3600,7 +3600,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
         cstr +=      "IEOR(s_" + thisTensor.indices[6].name + ", " + "s_" + thisTensor.indices[7].name + "))"
         F90file.write( cstr )
       else:
-        raise TypeError, "Number of indices in tensor must be 1 - 8"
+        raise TypeError("Number of indices in tensor must be 1 - 8")
 
       if not numTensor == len(thisTerm.tensors) - 1:
         F90file.write( " .and. &" + "\n" )
@@ -3623,7 +3623,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
       F90file.write( "do " + iname + " = psym(I_BEGIN, " + otype + ", " + sname + "), psym(I_END, " + otype + ", " + sname+ ")" + "\n" )
       count += 1
     if count != loop_count:
-      raise TypeError, "Algorithmic error occured .... "
+      raise TypeError("Algorithmic error occured .... ")
 
     # As a first step of evalutation of the contraction, search the Kronecker deltas    
     for numTensor in range(len(thisTerm.tensors)):
@@ -3641,7 +3641,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
           count -= 1
           if   count == 0: cstr += ") then"
           elif count >= 1: cstr += " .and. & "
-          elif count >  0: raise TYpeError, "Algorithmic Error"
+          elif count >  0: raise TYpeError("Algorithmic Error")
           F90file.write( cstr + "\n" )
 
     F90file.write( "" + "\n" )
@@ -3708,7 +3708,7 @@ def convertF90_2(LTensor, inTerm, title, F90file, Declare, isBareLTS = False, lt
           if (n_index != extRdm4[0]) and (n_index != extRdm4[1]): 
             RIndList.append(thisIndex)
             dummy_count += 1
-        if(dummy_count > 6): raise TypeError, "4-RDMs must have at least 2 external indices" 
+        if(dummy_count > 6): raise TypeError("4-RDMs must have at least 2 external indices") 
       elif thisTensor.name == 'X': # in case the intermediate
         RIndList = []
         for n_index in range(len(thisTensor.indices)):

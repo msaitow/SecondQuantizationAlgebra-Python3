@@ -57,7 +57,7 @@ class index(object):
     indType = []
     for l in indexType:
       if not ( type(l) in [type([]), type(())] ):
-        raise TypeError, "indexType must be a list or tuple of lists or tuples of strings"
+        raise TypeError("indexType must be a list or tuple of lists or tuples of strings")
       indType.append([])
       indType[-1].extend(l)
       indType[-1].sort()
@@ -67,34 +67,47 @@ class index(object):
       self.indType.append(())
       for s in l:
         if type(s) != type('a'):
-          raise TypeError, "indexType must be a list or tuple of lists or tuples of strings"
+          raise TypeError("indexType must be a list or tuple of lists or tuples of strings")
         self.indType[-1] = self.indType[-1] + (s,)
     self.indType = tuple(self.indType)
 
     # Initialize flag for whether the index is summed over
     if type(isSummed) != type(True):
-      raise TypeError, "isSummed must be True or False"
+      raise TypeError("isSummed must be True or False")
     self.isSummed = isSummed
 
     # Initialize flag for whether the index is external one
     if type(isExt) != type(True):
-      raise TypeError, "isExt must be True or False"
+      raise TypeError("isExt must be True or False")
     self.isExt = isExt
 
-  def __cmp__(self,other):
+  def __lt__(self,other):
     if (not isinstance(other,index)):
-      raise ValueError, "can only compare index class with other index class objects."
-#     retval = cmp(self.isExt, other.isExt)
-#     if retval != 0:
-#       return retval
-    retval = cmp(self.isSummed, other.isSummed)
-    if retval != 0:
-      return retval
-    retval = cmp(self.name, other.name)
-    if retval != 0:
-      return retval
-    return cmp(self.indType, other.indType)
+      raise ValueError("can only compare index class with other index class objects.")
+    if   (self.isSummed < other.isSummed): return True
+    elif (self.name < other.name)        : return True
+    elif (self.indType < other.indType)  : return True
+    else                                 : return False                
 
+  def __le__(self,other):
+    if (not isinstance(other,index)):
+      raise ValueError("can only compare index class with other index class objects.")
+    if   (self.isSummed <= other.isSummed): return True
+    elif (self.name <= other.name)        : return True
+    elif (self.indType <= other.indType)  : return True
+    else                                  : return False                
+    
+  def __eq__(self,other):
+    if (not isinstance(other,index)):
+      raise ValueError("can only compare index class with other index class objects.")
+    
+    if (self.isSummed==other.isSummed):      
+      if (self.name==other.name):
+        if (self.indType==other.indType): return True
+        else: return False
+      else: return False
+    else: return False
+  
   def __hash__(self):
     "Returns a hash tag. This implementation is a sort of ad hoc. So, this may cause some problem ..."
     retval = 0

@@ -27,13 +27,13 @@ E_bnml = [sqa.sfExOp([b, n, m, l])]
 
 T_bnml = [sqa.tensor('T2', [l, m, n, b])]
 
-print ""
-print "Evaluation of the IC-MRCI Hamiltonian elements based on"
-print "the spin-free generator and the commutator technique"
-print ""
-print "!!!!! The operator space is L: <Psi|", E_ijka[0],", ",E_bnml[0], "|Psi>: R !!!!!"
-print "@@@ SIGMA(Ai, Aj, Ak, Va) <-- H(Ai, Aj, Ak, Va; Vb, Am, Al, Ak) T(Ak, Al, Am, Vb)"
-print ""
+print("")
+print("Evaluation of the IC-MRCI Hamiltonian elements based on")
+print("the spin-free generator and the commutator technique")
+print("")
+print("!!!!! The operator space is L: <Psi|", E_ijka[0],", ",E_bnml[0], "|Psi>: R !!!!!")
+print("@@@ SIGMA(Ai, Aj, Ak, Va) <-- H(Ai, Aj, Ak, Va; Vb, Am, Al, Ak) T(Ak, Al, Am, Vb)")
+print("")
 
 result = []
 # One-body part 
@@ -131,15 +131,15 @@ sqa.termChop(result2)
 
 result += result2
 
-print ""
-print "* The zero-, one- and two-body parts ....."
-print ""
+print("")
+print("* The zero-, one- and two-body parts .....")
+print("")
 
 result = sqa.convert2Mulliken(result, 'T2')
 
 num = 0
 for t in result:
-    print num, t
+    print(num, t)
     num += 1
 
 sigma = sqa.tensor('S2', [i, j, k, a], [])

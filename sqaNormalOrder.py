@@ -35,7 +35,7 @@ def normalOrder(inTerm):
 
   # check that inTerm is a term
   if not isinstance(inTerm, term):
-    raise TypeError, "inTerm must be of class term"
+    raise TypeError("inTerm must be of class term")
 
   # determine what types of operators the term contains
   has_creDesOps = False
@@ -49,8 +49,8 @@ def normalOrder(inTerm):
   # If term has both creation/destruction operators and spin free excitation operators,
   # raise an error
   if has_creDesOps and has_sfExOps:
-    raise RuntimeError, "Normal ordering not implemented when both creOp/desOp and sfExOp " + \
-                        "tensors are present"
+    raise RuntimeError("Normal ordering not implemented when both creOp/desOp and sfExOp " + \
+                        "tensors are present")
 
   # if the term is already normal ordered, return it unchanged
   elif inTerm.isNormalOrdered():
@@ -132,7 +132,7 @@ def normalOrder(inTerm):
         if subOpString[i] is 'contracted':
           del(subOpString[i])
         else:
-          i += 1
+          i += 1          
       (sortSign,sortedOps) = sortOps(subOpString)
       totalSign = conSign * sortSign
       outTensors = []
@@ -192,8 +192,8 @@ def normalOrder(inTerm):
           perms = [0]
           if nc > 0:
             perms = makePermutations(nc)
-          tups1 = makeTuples(nc, range(o1))
-          tups2 = makeTuples(nc, range(o2))
+          tups1 = makeTuples(nc, list(range(o1)))
+          tups2 = makeTuples(nc, list(range(o2)))
 
           # For each contraction, compute the resulting term
           for perm in perms:
@@ -237,7 +237,7 @@ def normalOrder(inTerm):
                 # Ensure that all slots in the index list have been filled
                 for ind in indexList:
                   if ind is False:
-                    raise RuntimeError, "There is at least one unassigned index in the new spin free operator."
+                    raise RuntimeError("There is at least one unassigned index in the new spin free operator.")
 
                 # Add the new excitation operator to the tensor list
                 tensorList.append(sfExOp(indexList))
@@ -255,7 +255,7 @@ def normalOrder(inTerm):
     outTerms = iter_output_terms
 
   else:
-    raise RuntimeError, "Normal ordering function failed to choose what to do."
+    raise RuntimeError("Normal ordering function failed to choose what to do.")
 
 #  print "Terms after normal ordering:"
 #  for t in outTerms:
@@ -273,7 +273,7 @@ def contractCoreOps_sf(inTerm):
 
   # check that inTerm is a term
   if not isinstance(inTerm, term):
-    raise TypeError, "inTerm must be of class term"
+    raise TypeError("inTerm must be of class term")
 
   # Make separate lists of the spin free excitation operators and other tensors
   sfExOp_list = []
@@ -286,7 +286,7 @@ def contractCoreOps_sf(inTerm):
 
   # Initialize n, the number of remaining spin free excitation operators
   if len(sfExOp_list) != 1:
-    raise RuntimeError, "terms should have single sfExOp"
+    raise RuntimeError("terms should have single sfExOp")
 
   # Give short names for the excitation operator and their order
   e1 = sfExOp_list[0]
@@ -407,7 +407,7 @@ def contractCoreOps_sf(inTerm):
     # Ensure that all slots in the index list have been filled
     for ind in indexList:
       if ind is False:
-        raise RuntimeError, "There is at least one unassigned index in the new spin free operator."
+        raise RuntimeError("There is at least one unassigned index in the new spin free operator.")
 
     # Add the new excitation operator to the tensor list
     if len(indexList) != 0:

@@ -50,9 +50,9 @@ for i in range(20):
   fixedInd.append(sqa.index('j%i' %i, [], False))
 
 # Test 1: Normal ordering of a(j1) a(j2) a+(j3) a+(j4)
-print ""
-print "Starting test 1"
-print ""
+print("")
+print("Starting test 1")
+print("")
 startTime = time.time()
 test1_tensors = []
 test1_tensors.append(sqa.desOp(fixedInd[1]))
@@ -72,19 +72,19 @@ test1_correct_answer = " (  -1.00000) kdelta(j1,j3) kdelta(j2,j4) \n" + \
                        " (  -1.00000) kdelta(j2,j3) cre(j4) des(j1) \n" + \
                        " (   1.00000) kdelta(j2,j4) cre(j3) des(j1) \n" + \
                        " (   1.00000) cre(j3) cre(j4) des(j1) des(j2) \n"
-print "Test 1 output:"
-print test1_string_output
+print("Test 1 output:")
+print(test1_string_output)
 if test1_string_output == test1_correct_answer:
-  print "Test 1 passed",
+  print("Test 1 passed", end=' ')
 else:
-  print "Test 1 failed",
-print " (%.3f seconds)\n" %(time.time()-startTime)
+  print("Test 1 failed", end=' ')
+print(" (%.3f seconds)\n" %(time.time()-startTime))
 
 # Test 2: Commutator of all alpha 1e hamiltonian with all alpha 2 electron amplitude (without index types)
 #         The result is transpose equated, so that symmetrization is required in the resulting Hamiltonian
-print ""
-print "Starting test 2"
-print ""
+print("")
+print("Starting test 2")
+print("")
 startTime = time.time()
 h1 = sqa.tensor('h1', dummyInd[0:2], h1sym)
 a2 = sqa.tensor('a2', dummyInd[2:6], a2sym_aaaa)
@@ -102,18 +102,18 @@ test2_correct_answer = \
                        " (  -4.00000) a2(a,b,c,d) h1(c,e) cre(d) cre(e) des(a) des(b) \n"
 #                       " (   4.00000) a2(a,b,c,d) h1(a,e) cre(b) cre(e) des(c) des(d) \n" + \
 #                       " (  -4.00000) a2(a,b,c,d) h1(c,e) cre(a) cre(b) des(d) des(e) \n"
-print "Test 2 output:"
-print test2_string_output
+print("Test 2 output:")
+print(test2_string_output)
 if test2_string_output == test2_correct_answer:
-  print "Test 2 passed",
+  print("Test 2 passed", end=' ')
 else:
-  print "Test 2 failed",
-print " (%.3f seconds)\n" %(time.time()-startTime)
+  print("Test 2 failed", end=' ')
+print(" (%.3f seconds)\n" %(time.time()-startTime))
 
 # Test 3: Commutator of all alpha 2e hamiltonian with alpha/beta 2 electron amplitude, index types included
-print ""
-print "Starting test 3"
-print ""
+print("")
+print("Starting test 3")
+print("")
 startTime = time.time()
 test3_indices = []
 test3_indices.append(sqa.index('i0', [['alpha'], ['core', 'active', 'virtual']], True))
@@ -181,18 +181,18 @@ test3_correct_answer = " (   2.00000) a2_abab(a,b,c,d) h2_aaaa(a,e,f,g) cre(b) c
                        "index e types = (('alpha',), ('active', 'core', 'virtual'))\n" + \
                        "index f types = (('alpha',), ('active', 'core', 'virtual'))\n" + \
                        "index g types = (('alpha',), ('active', 'core', 'virtual'))\n"
-print "Test 3 output:"
-print test3_string_output
+print("Test 3 output:")
+print(test3_string_output)
 if test3_string_output == test3_correct_answer:
-  print "Test 3 passed",
+  print("Test 3 passed", end=' ')
 else:
-  print "Test 3 failed",
-print " (%.3f seconds)\n" %(time.time()-startTime)
+  print("Test 3 failed", end=' ')
+print(" (%.3f seconds)\n" %(time.time()-startTime))
 
 # Test 4: Normal ordering of the spin free operator string E(i0,i1) E(i2,i3,i4,i5) E(i6,i7,i8,i9)
-print ""
-print "Starting test 4"
-print ""
+print("")
+print("Starting test 4")
+print("")
 startTime = time.time()
 test4_indices = [sqa.index('i%i' %i) for i in range(10)]
 test4_term = sqa.term(1.0, [], [sqa.sfExOp(test4_indices[0:2]), sqa.sfExOp(test4_indices[2:6]), sqa.sfExOp(test4_indices[6:10])])
@@ -228,18 +228,18 @@ test4_correct_answer = " (   1.00000) kdelta(i1,i2) kdelta(i4,i6) kdelta(i5,i7) 
                        " (   1.00000) kdelta(i5,i6) E4(i0,i2,i3,i7,i1,i4,i8,i9) \n" + \
                        " (   1.00000) kdelta(i5,i7) E4(i0,i2,i3,i6,i1,i4,i9,i8) \n" + \
                        " (   1.00000) E5(i0,i2,i3,i6,i7,i1,i4,i5,i8,i9) \n"
-print "Test 4 output:"
-print test4_string_output
+print("Test 4 output:")
+print(test4_string_output)
 if test4_string_output == test4_correct_answer:
-  print "Test 4 passed",
+  print("Test 4 passed", end=' ')
 else:
-  print "Test 4 failed",
-print " (%.3f seconds)\n" %(time.time()-startTime)
+  print("Test 4 failed", end=' ')
+print(" (%.3f seconds)\n" %(time.time()-startTime))
 
 # Test 5: Commutator of 2e spin free hamiltonian with 2e spin free amplitudes
-print ""
-print "Starting test 5"
-print ""
+print("")
+print("Starting test 5")
+print("")
 startTime = time.time()
 test5_indices = []
 test5_indices.append( sqa.index('i0', [['core', 'active', 'virtual']], True) )
@@ -326,10 +326,10 @@ test5_correct_answer = " (   2.00000) a2(a,b,c,d) h2(a,b,e,f) E2(c,d,e,f) \n" + 
                        "index e types = (('active', 'core', 'virtual'),)\n" + \
                        "index f types = (('active', 'core', 'virtual'),)\n" + \
                        "index g types = (('active', 'core', 'virtual'),)\n"
-print "Test 5 output:"
-print test5_string_output
+print("Test 5 output:")
+print(test5_string_output)
 if test5_string_output == test5_correct_answer:
-  print "Test 5 passed",
+  print("Test 5 passed", end=' ')
 else:
-  print "Test 5 failed",
-print " (%.3f seconds)\n" %(time.time()-startTime)
+  print("Test 5 failed", end=' ')
+print(" (%.3f seconds)\n" %(time.time()-startTime))

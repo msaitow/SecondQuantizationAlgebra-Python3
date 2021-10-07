@@ -26,6 +26,6 @@ for t in result:
 
 sqa.combineTerms(result)
 
-print "results"
+print("results")
 for t in result:
-    print t
+    print(t)

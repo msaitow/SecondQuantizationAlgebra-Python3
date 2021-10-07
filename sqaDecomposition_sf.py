@@ -40,11 +40,11 @@ def decomp_3rdms_to_2rdms_sf(inTerms, d3name, d1, d2, indexOrder = '1212'):
 
   # Check input
   if type(inTerms) != type([]):
-    raise TypeError, TypeErrorMessage
+    raise TypeError(TypeErrorMessage)
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
 
   # Initialize index
   i = 0
@@ -59,7 +59,7 @@ def decomp_3rdms_to_2rdms_sf(inTerms, d3name, d1, d2, indexOrder = '1212'):
 
     # Check input
     if not isinstance(t, term):
-      raise TypeError, TypeErrorMessage
+      raise TypeError(TypeErrorMessage)
 
     # Initialize the rdm variable
     rdm = False
@@ -87,7 +87,7 @@ def decomp_3rdms_to_2rdms_sf(inTerms, d3name, d1, d2, indexOrder = '1212'):
       del(inTerms[i])
 
   if options.verbose:
-    print 'decomposed %i 3-body RDMs' %(opCount)
+    print(('decomposed %i 3-body RDMs' %(opCount)))
 
 
 #--------------------------------------------------------------------------------------------------
@@ -105,15 +105,15 @@ def decomp_4rdms_to_2rdms_sf(inTerms, d4name, d1, d2, d2_hom, d2_het):
 
   # Check input
   if type(inTerms) != type([]):
-    raise TypeError, TypeErrorMessage
+    raise TypeError(TypeErrorMessage)
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
   if ( not isinstance(d2_hom, tensor) ) or (len(d2_hom.indices) != 4):
-    raise TypeError, "d2_hom must be a tensor with 4 indices"
+    raise TypeError("d2_hom must be a tensor with 4 indices")
   if ( not isinstance(d2_het, tensor) ) or (len(d2_het.indices) != 4):
-    raise TypeError, "d2_het must be a tensor with 4 indices"
+    raise TypeError("d2_het must be a tensor with 4 indices")
 
   # Initialize index
   i = 0
@@ -128,7 +128,7 @@ def decomp_4rdms_to_2rdms_sf(inTerms, d4name, d1, d2, d2_hom, d2_het):
 
     # Check input
     if not isinstance(t, term):
-      raise TypeError, TypeErrorMessage
+      raise TypeError(TypeErrorMessage)
 
     # Initialize the rdm variable
     rdm = False
@@ -156,7 +156,7 @@ def decomp_4rdms_to_2rdms_sf(inTerms, d4name, d1, d2, d2_hom, d2_het):
       del(inTerms[i])
 
   if options.verbose:
-    print 'decomposed %i 4-body RDMs' %(opCount)
+    print(('decomposed %i 4-body RDMs' %(opCount)))
 
 
 #--------------------------------------------------------------------------------------------------
@@ -174,17 +174,17 @@ def decomp_4rdms_to_3rdms_sf(inTerms, d4name, d1, d2, d2_hom, d2_het, d3):
 
   # Check input
   if type(inTerms) != type([]):
-    raise TypeError, TypeErrorMessage
+    raise TypeError(TypeErrorMessage)
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
   if ( not isinstance(d2_hom, tensor) ) or (len(d2_hom.indices) != 4):
-    raise TypeError, "d2_hom must be a tensor with 4 indices"
+    raise TypeError("d2_hom must be a tensor with 4 indices")
   if ( not isinstance(d2_het, tensor) ) or (len(d2_het.indices) != 4):
-    raise TypeError, "d2_het must be a tensor with 4 indices"
+    raise TypeError("d2_het must be a tensor with 4 indices")
   if ( not isinstance(d3, tensor) ) or (len(d3.indices) != 6):
-    raise TypeError, "d3 must be a tensor with 6 indices"
+    raise TypeError("d3 must be a tensor with 6 indices")
 
   # Initialize index
   i = 0
@@ -199,7 +199,7 @@ def decomp_4rdms_to_3rdms_sf(inTerms, d4name, d1, d2, d2_hom, d2_het, d3):
 
     # Check input
     if not isinstance(t, term):
-      raise TypeError, TypeErrorMessage
+      raise TypeError(TypeErrorMessage)
 
     # Initialize the rdm variable
     rdm = False
@@ -227,7 +227,7 @@ def decomp_4rdms_to_3rdms_sf(inTerms, d4name, d1, d2, d2_hom, d2_het, d3):
       del(inTerms[i])
 
   if options.verbose:
-    print 'decomposed %i 4-body RDMs' %(opCount)
+    print(('decomposed %i 4-body RDMs' %(opCount)))
 
 
 #--------------------------------------------------------------------------------------------------
@@ -241,11 +241,11 @@ def decomp_3rdm_to_2rdm_sf(d3, d1, d2, indexOrder = '1212'):
   """
 
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
   if ( not isinstance(d3, tensor) ) or (len(d3.indices) != 6):
-    raise TypeError, "d3 must be a tensor with 6 indices"
+    raise TypeError("d3 must be a tensor with 6 indices")
 
   # sort the 3-body RDM's indices into 1212 ordering
   d3_indices = []
@@ -257,19 +257,19 @@ def decomp_3rdm_to_2rdm_sf(d3, d1, d2, indexOrder = '1212'):
     for i in range(3):
       d3_indices.append(d3.indices[2*i+1])
   else:
-    raise ValueError, "unexpected indexOrder parameter:  %s" %(indexOrder)
+    raise ValueError("unexpected indexOrder parameter:  %s" %(indexOrder))
 
   decomp = []
 
   # Prepare terms from    sum (-1)^p %gamma^{i_1}_{i_4} %lambda^{i_2`i_3}_{i_5`i_6}
   for p0 in range(3):
-    temp = range(3)
+    temp = list(range(3))
     del temp[p0]
     p1 = temp[0]
     p2 = temp[1]
     ti = [p0, p1, p2]
     for q0 in range(3):
-      temp = range(3)
+      temp = list(range(3))
       del temp[q0]
       q1 = temp[0]
       q2 = temp[1]
@@ -281,7 +281,7 @@ def decomp_3rdm_to_2rdm_sf(d3, d1, d2, indexOrder = '1212'):
       # determine the sign of the term based on the number of index permutations
       n_perm = get_num_perms(ti,bi)
       if n_perm > 1:
-        raise ValueError, "n_perm = %i which is > 1.  This was unexpected." %n_perm
+        raise ValueError("n_perm = %i which is > 1.  This was unexpected." %n_perm)
       sign = (-1)**n_perm
 
       # create the 1RDM 2RDM term
@@ -316,7 +316,7 @@ def decomp_3rdm_to_2rdm_sf(d3, d1, d2, indexOrder = '1212'):
       decomp.append(term(coeff, [], d1_copies))
 
   # Compute terms from the sum involving only one particle density matrices
-  ti = range(3)
+  ti = list(range(3))
   for bi in makePermutations(3):
     
     # Determine the number of permutations
@@ -380,15 +380,15 @@ def decomp_4rdm_to_2rdm_sf(d4, d1, d2, d2_hom, d2_het):
 
   # Check input
   if ( not isinstance(d4, tensor) ) or (len(d4.indices) != 8):
-    raise TypeError, "d4 must be a tensor with 8 indices"
+    raise TypeError("d4 must be a tensor with 8 indices")
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
   if ( not isinstance(d2_hom, tensor) ) or (len(d2_hom.indices) != 4):
-    raise TypeError, "d2_hom must be a tensor with 4 indices"
+    raise TypeError("d2_hom must be a tensor with 4 indices")
   if ( not isinstance(d2_het, tensor) ) or (len(d2_het.indices) != 4):
-    raise TypeError, "d2_het must be a tensor with 4 indices"
+    raise TypeError("d2_het must be a tensor with 4 indices")
 
   # Initialize the return value
   decomp = []
@@ -406,7 +406,7 @@ def decomp_4rdm_to_2rdm_sf(d4, d1, d2, d2_hom, d2_het):
             bi = [s,r]
           else:
             bi = [r,s]
-          temp = range(4)
+          temp = list(range(4))
           del temp[s]
           del temp[r]
           if temp[0] == ti[3] or temp[1] == ti[2]:
@@ -446,7 +446,7 @@ def decomp_4rdm_to_2rdm_sf(d4, d1, d2, d2_hom, d2_het):
             d2_het_copy_1.indices = [d4.indices[i] for i in (ti[2:4] + [bj[3], bj[2]])]
             decomp.append(term(coeff, [], [d2_het_copy_0, d2_het_copy_1]))
           else:
-            raise RuntimeError, "Did not expect a term with %i permutations" %n_perm
+            raise RuntimeError("Did not expect a term with %i permutations" %n_perm)
 
           # Create 'un-permuted' 2RDM 1RDM 1RDM terms
           coeff = sign * (-1) * (0.5)**n_perm 
@@ -509,7 +509,7 @@ def decomp_4rdm_to_2rdm_sf(d4, d1, d2, d2_hom, d2_het):
             d1_copy_1.indices = [d4.indices[i] for i in (ti[1:2] + bj[1:2])]
             decomp.append(term(coeff, [], [d2_copy_0, d1_copy_0, d1_copy_1]))
           else:
-            raise RuntimeError, "Did not expect a term with %i permutations" %n_perm
+            raise RuntimeError("Did not expect a term with %i permutations" %n_perm)
 
           # Create 1RDM 1RDM 1RDM 1RDM terms
           bj = [i for i in bi]
@@ -561,7 +561,7 @@ def decomp_4rdm_to_2rdm_sf(d4, d1, d2, d2_hom, d2_het):
           if r == s:
             continue
           bi = [r,s]
-          temp = range(4)
+          temp = list(range(4))
           del temp[max(r,s)]
           del temp[min(r,s)]
           if temp[0] == ti[3] or temp[1] == ti[2]:
@@ -623,7 +623,7 @@ def decomp_4rdm_to_2rdm_sf(d4, d1, d2, d2_hom, d2_het):
           decomp.append(term(coeff, [], d1_copies))
 
   # Compute terms from the sum involving only one particle density matrices
-  ti = range(4)
+  ti = list(range(4))
   for bi in makePermutations(4):
     
     # Determine the number of permutations
@@ -681,28 +681,28 @@ def decomp_4rdm_to_3rdm_sf(d4, d1, d2, d2_hom, d2_het, d3):
 
   # Check input
   if ( not isinstance(d4, tensor) ) or (len(d4.indices) != 8):
-    raise TypeError, "d4 must be a tensor with 8 indices"
+    raise TypeError("d4 must be a tensor with 8 indices")
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
   if ( not isinstance(d2_hom, tensor) ) or (len(d2_hom.indices) != 4):
-    raise TypeError, "d2_hom must be a tensor with 4 indices"
+    raise TypeError("d2_hom must be a tensor with 4 indices")
   if ( not isinstance(d2_het, tensor) ) or (len(d2_het.indices) != 4):
-    raise TypeError, "d2_het must be a tensor with 4 indices"
+    raise TypeError("d2_het must be a tensor with 4 indices")
   if ( not isinstance(d3, tensor) ) or (len(d3.indices) != 6):
-    raise TypeError, "d3 must be a tensor with 6 indices"
+    raise TypeError("d3 must be a tensor with 6 indices")
 
   # Initialize the return value
   decomp = []
 
   # Compute terms from the sum involving the 3-body cumulant
   for p in range(4):
-    ti = range(4)
+    ti = list(range(4))
     del(ti[p])
     ti.insert(0,p)
     for q in range(4):
-      bi = range(4)
+      bi = list(range(4))
       del(bi[q])
       bi.insert(0,q)
       for i in range(1,4):
@@ -746,7 +746,7 @@ def decomp_4rdm_to_3rdm_sf(d4, d1, d2, d2_hom, d2_het, d3):
             bi = [s,r]
           else:
             bi = [r,s]
-          temp = range(4)
+          temp = list(range(4))
           del temp[s]
           del temp[r]
           if temp[0] == ti[3] or temp[1] == ti[2]:
@@ -786,7 +786,7 @@ def decomp_4rdm_to_3rdm_sf(d4, d1, d2, d2_hom, d2_het, d3):
             d2_het_copy_1.indices = [d4.indices[i] for i in (ti[2:4] + [bj[3], bj[2]])]
             decomp.append(term(coeff, [], [d2_het_copy_0, d2_het_copy_1]))
           else:
-            raise RuntimeError, "Did not expect a term with %i permutations" %n_perm
+            raise RuntimeError("Did not expect a term with %i permutations" %n_perm)
 
           # Create 'un-permuted' 2RDM 1RDM 1RDM terms
           coeff = sign * (-1) * (0.5)**n_perm 
@@ -849,7 +849,7 @@ def decomp_4rdm_to_3rdm_sf(d4, d1, d2, d2_hom, d2_het, d3):
             d1_copy_1.indices = [d4.indices[i] for i in (ti[1:2] + bj[1:2])]
             decomp.append(term(coeff, [], [d2_copy_0, d1_copy_0, d1_copy_1]))
           else:
-            raise RuntimeError, "Did not expect a term with %i permutations" %n_perm
+            raise RuntimeError("Did not expect a term with %i permutations" %n_perm)
 
           # Create 1RDM 1RDM 1RDM 1RDM terms
           bj = [i for i in bi]
@@ -901,7 +901,7 @@ def decomp_4rdm_to_3rdm_sf(d4, d1, d2, d2_hom, d2_het, d3):
           if r == s:
             continue
           bi = [r,s]
-          temp = range(4)
+          temp = list(range(4))
           del temp[max(r,s)]
           del temp[min(r,s)]
           if temp[0] == ti[3] or temp[1] == ti[2]:
@@ -963,7 +963,7 @@ def decomp_4rdm_to_3rdm_sf(d4, d1, d2, d2_hom, d2_het, d3):
           decomp.append(term(coeff, [], d1_copies))
 
   # Compute terms from the sum involving only one particle density matrices
-  ti = range(4)
+  ti = list(range(4))
   for bi in makePermutations(4):
 
     # Determine the number of permutations
@@ -1013,11 +1013,11 @@ def decomp_3ops_to_2ops_2rdms_sf(inTerms, d1, d2, indexOrder = '1212'):
 
   # Check input
   if type(inTerms) != type([]):
-    raise TypeError, TypeErrorMessage
+    raise TypeError(TypeErrorMessage)
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
 
   # Initialize index
   i = 0
@@ -1032,7 +1032,7 @@ def decomp_3ops_to_2ops_2rdms_sf(inTerms, d1, d2, indexOrder = '1212'):
 
     # Check input
     if not isinstance(t, term):
-      raise TypeError, TypeErrorMessage
+      raise TypeError(TypeErrorMessage)
 
     # Initialize the operator variable
     op = False
@@ -1060,7 +1060,7 @@ def decomp_3ops_to_2ops_2rdms_sf(inTerms, d1, d2, indexOrder = '1212'):
       del(inTerms[i])
 
   if options.verbose:
-    print 'decomposed %i 3-body operators' %(opCount)
+    print(('decomposed %i 3-body operators' %(opCount)))
 
 
 #--------------------------------------------------------------------------------------------------
@@ -1078,11 +1078,11 @@ def decomp_4ops_to_2ops_2rdms_sf(inTerms, d1, d2):
 
   # Check input
   if type(inTerms) != type([]):
-    raise TypeError, TypeErrorMessage
+    raise TypeError(TypeErrorMessage)
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
 
   # Initialize index
   i = 0
@@ -1097,7 +1097,7 @@ def decomp_4ops_to_2ops_2rdms_sf(inTerms, d1, d2):
 
     # Check input
     if not isinstance(t, term):
-      raise TypeError, TypeErrorMessage
+      raise TypeError(TypeErrorMessage)
 
     # Initialize the operator variable
     op = False
@@ -1125,7 +1125,7 @@ def decomp_4ops_to_2ops_2rdms_sf(inTerms, d1, d2):
       del(inTerms[i])
 
   if options.verbose:
-    print 'decomposed %i 4-body operators' %(opCount)
+    print(('decomposed %i 4-body operators' %(opCount)))
 
 
 #--------------------------------------------------------------------------------------------------
@@ -1140,14 +1140,14 @@ def decomp_3op_to_2op_2rdm_sf(op, d1, d2, indexOrder = '1212'):
 
   # Check input
   if ( not isinstance(op, sfExOp) ) or (op.order != 3):
-    raise TypeError, "op must be a 3-particle sfExOp"
+    raise TypeError("op must be a 3-particle sfExOp")
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
 
   if indexOrder != '1212' and indexOrder != '1122':
-    raise ValueError, "indexOrder must be '1212' or '1122'"
+    raise ValueError("indexOrder must be '1212' or '1122'")
 
   # Initialize the return value
   decomp = []
@@ -1156,7 +1156,7 @@ def decomp_3op_to_2op_2rdm_sf(op, d1, d2, indexOrder = '1212'):
   for p0 in range(3):
 
     # Compute the top indices
-    temp = range(3)
+    temp = list(range(3))
     del temp[p0]
     p1 = temp[0]
     p2 = temp[1]
@@ -1166,7 +1166,7 @@ def decomp_3op_to_2op_2rdm_sf(op, d1, d2, indexOrder = '1212'):
 
       # Compute the bottom indices, remembering that the second and third index pairs
       # should retain original pairing as much as possible.
-      temp = range(3)
+      temp = list(range(3))
       del temp[q0]
       q1 = temp[0]
       q2 = temp[1]
@@ -1250,16 +1250,16 @@ def decomp_4op_to_2op_2rdm_sf(op, d1, d2):
 
   # Check input
   if ( not isinstance(op, sfExOp) ) or (op.order != 4):
-    raise TypeError, "op must be a 4-particle sfExOp"
+    raise TypeError("op must be a 4-particle sfExOp")
   if ( not isinstance(d1, tensor) ) or (len(d1.indices) != 2):
-    raise TypeError, "d1 must be a tensor with 2 indices"
+    raise TypeError("d1 must be a tensor with 2 indices")
   if ( not isinstance(d2, tensor) ) or (len(d2.indices) != 4):
-    raise TypeError, "d2 must be a tensor with 4 indices"
+    raise TypeError("d2 must be a tensor with 4 indices")
 
   # Initialize the return value
   decomp = []
 
-  raise RuntimeError, "decomp_4op_to_2op_2rdm_sf not yet implemented"
+  raise RuntimeError("decomp_4op_to_2op_2rdm_sf not yet implemented")
 
   # Return the decomposition
   return decomp

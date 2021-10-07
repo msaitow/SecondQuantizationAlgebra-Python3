@@ -51,9 +51,9 @@ class symmetry:
           tempList.append(elem)
       if not patternError:
         tempList.sort()
-        patternError = ( tempList != range(len(pattern)) )
+        patternError = ( tempList != list(range(len(pattern))) )
     if patternError:
-      raise ValueError, "pattern must be a tuple of contiguous, non-negative integers including zero. They need not be in order."
+      raise ValueError("pattern must be a tuple of contiguous, non-negative integers including zero. They need not be in order.")
     else:
       self.pattern = pattern
     if (factor == 1 or factor == -1) and type(factor) == type(1):
@@ -61,15 +61,30 @@ class symmetry:
     elif type(factor) == type(1) or type(factor) == type(1.0):
       self.factor = float(factor)
     else:
-      raise TypeError, "factor must be a float or an int."
+      raise TypeError("factor must be a float or an int.")
 
   #------------------------------------------------------------------------------------------------
   
   def __cmp__(self,other):
     if not isinstance(other,symmetry):
-      raise TypeError, "can only compare a symmetry object to other symmetry objects"
+      raise TypeError("can only compare a symmetry object to other symmetry objects")
     return cmp(self.pattern,other.pattern)
 
+  def __le__(self,other):
+    if not isinstance(other,symmetry):
+      raise TypeError("can only compare a symmetry object to other symmetry objects")
+    return (self.pattern <= other.pattern)
+  
+  def __lt__(self,other):
+    if not isinstance(other,symmetry):
+      raise TypeError("can only compare a symmetry object to other symmetry objects")
+    return (self.pattern < other.pattern)
+
+  def __eq__(self,other):
+    if not isinstance(other,symmetry):
+      raise TypeError("can only compare a symmetry object to other symmetry objects")
+    return (self.pattern == other.pattern)
+  
   #------------------------------------------------------------------------------------------------
   
   def __str__(self):

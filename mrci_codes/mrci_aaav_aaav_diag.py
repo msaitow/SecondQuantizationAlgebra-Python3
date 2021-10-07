@@ -20,13 +20,13 @@ Dsym_c = sqa.symmetry((1,0, 3,2), 1)
 E_ijka = [sqa.sfExOp([i, j, k, a])]
 E_bnml = [sqa.sfExOp([a, k, j, i])]
 
-print ""
-print "Evaluation of the IC-MRCI Hamiltonian elements based on"
-print "the spin-free generator and the commutator technique"
-print ""
-print "!!!!! The operator space is L: <Psi|", E_ijka[0],", ",E_bnml[0], "|Psi>: R !!!!!"
-print "@@@ SIGMA(Ai, Aj, Ak, Va) <-- H(Ai, Aj, Ak, Va; Vb, Am, Al, Ak) T(Ak, Al, Am, Vb)"
-print ""
+print("")
+print("Evaluation of the IC-MRCI Hamiltonian elements based on")
+print("the spin-free generator and the commutator technique")
+print("")
+print("!!!!! The operator space is L: <Psi|", E_ijka[0],", ",E_bnml[0], "|Psi>: R !!!!!")
+print("@@@ SIGMA(Ai, Aj, Ak, Va) <-- H(Ai, Aj, Ak, Va; Vb, Am, Al, Ak) T(Ak, Al, Am, Vb)")
+print("")
 
 result = []
 # One-body part ....
@@ -123,15 +123,15 @@ sqa.termChop(result2)
 
 result += result2
 
-print ""
-print "* The zero, one and two-body parts ....."
-print ""
+print("")
+print("* The zero, one and two-body parts .....")
+print("")
 
 result = sqa.convert2Mulliken(result)
 
 num = 0
 for t in result:
-    print num, t
+    print(num, t)
     num += 1
 
 Hdiag = sqa.tensor('Hdiag', [i, j, k, a], [])

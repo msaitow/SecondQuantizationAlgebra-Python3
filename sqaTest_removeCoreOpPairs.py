@@ -46,16 +46,16 @@ terms.append(sqa.term(1.0, [], [sqa.creOp(ac[0]), sqa.creOp(ac[1]), sqa.creOp(ac
 terms.append(sqa.term(1.0, [], [sqa.creOp(at[0]), sqa.creOp(ac[1]), sqa.creOp(ac[0]), \
                                 sqa.desOp(ac[1]), sqa.desOp(ac[0]), sqa.desOp(ac[1])]))
 
-print ""
-print "Testing removeCoreOpPairs function."
-print ""
-print "Core indices labeled with c."
-print "Active indices labeled with a."
+print("")
+print("Testing removeCoreOpPairs function.")
+print("")
+print("Core indices labeled with c.")
+print("Active indices labeled with a.")
 
-print ""
-print "initial terms:"
+print("")
+print("initial terms:")
 for t in terms:
-  print t
+  print(t)
 
 sqa.removeCoreOpPairs(terms)
 
@@ -71,13 +71,13 @@ correctOutput = \
 " (  -1.00000) cre(c0) cre(c0) des(c0) des(a1) \n" + \
 " (  -1.00000) cre(a0) cre(c1) des(c1) des(c1) \n"
 
-print ""
-print "terms after core operator pair removal:"
-print output
+print("")
+print("terms after core operator pair removal:")
+print(output)
 
 if output == correctOutput:
-  print "Test passed!"
+  print("Test passed!")
 else:
-  print "Test failed.  Correct output is:"
-  print correctOutput
-print ""
+  print("Test failed.  Correct output is:")
+  print(correctOutput)
+print("")
