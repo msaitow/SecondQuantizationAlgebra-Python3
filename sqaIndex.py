@@ -61,7 +61,6 @@ class index(object):
       indType.append([])
       indType[-1].extend(l)
       indType[-1].sort()
-#    indType.sort()
     self.indType = []
     for l in indType:
       self.indType.append(())
@@ -108,13 +107,6 @@ class index(object):
       else: return False
     else: return False
   
-  def __hash__(self):
-    "Returns a hash tag. This implementation is a sort of ad hoc. So, this may cause some problem ..."
-    retval = 0
-    for c in self.name:
-      retval = retval ^ ord(c)
-    return retval
-
   def tup(self):
     "Returns a tuple representation of the index.  The return object in unmutable and thus can be used as a dictionary key."
     return (self.name, self.indType, self.isSummed, self.isExt)

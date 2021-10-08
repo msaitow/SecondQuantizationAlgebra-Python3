@@ -65,11 +65,6 @@ class symmetry:
 
   #------------------------------------------------------------------------------------------------
   
-  def __cmp__(self,other):
-    if not isinstance(other,symmetry):
-      raise TypeError("can only compare a symmetry object to other symmetry objects")
-    return cmp(self.pattern,other.pattern)
-
   def __le__(self,other):
     if not isinstance(other,symmetry):
       raise TypeError("can only compare a symmetry object to other symmetry objects")

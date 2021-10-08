@@ -62,173 +62,65 @@ class term:
 
   #------------------------------------------------------------------------------------------------
 
-  def __cmp__(self,other):
+  def __le__(self,other):
     if not isinstance(other,term):
       raise TypeError("term object can only be compared to other term objects.")
 
-    # sort by number of loose creation operators first
-    retval = cmp(self.nCreOps(),other.nCreOps())
-    if retval != 0:
-      return retval
-
-    # next sort by number of loose destruction operators
-    retval = cmp(self.nDesOps(),other.nDesOps())
-    if retval != 0:
-      return retval
-
-    # next sort by the orders of the spin free excitation operators
-    retval = cmp(self.sfExOp_ranks(),other.sfExOp_ranks())
-    if retval != 0:
-      return retval
-
-    # next sort by the number of constants
-    retval = cmp(len(self.constants),len(other.constants))
-    if retval != 0:
-      return retval
-
-    # next sort by the number of tensors
-    retval = cmp(len(self.tensors),len(other.tensors))
-    if retval != 0:
-      return retval
-
-    # next sort by the tensors' names
-    retval = cmp([t.name for t in self.tensors], [t.name for t in other.tensors])
-    if retval != 0:
-      return retval
-
-    # next sort by the tensors
-    retval = cmp(self.tensors,other.tensors)
-    if retval != 0:
-      return retval
-
-    # next sort by the constants
-    retval = cmp(self.constants,other.constants)
-    if retval != 0:
-      return retval
-
-    # finally compare the numerical constants
-    numDiff = self.numConstant - other.numConstant
-    if abs(numDiff) < 1e-6:
-      return 0
-    elif numDiff < 0:
-      return -1
-    elif numDiff > 0:
-      return 1
-    else:
-      raise RuntimeError("Failure in comparison of terms' numeric constants.")
-    return numDiff
-
+    if   (self.nCreOps() <= other.nCreOps())                                : return True
+    elif (self.nDesOps() <= other.nDesOps())                                : return True
+    elif (self.sfExOp_ranks() <= other.sfExOp_ranks())                      : return True
+    elif (len(self.constants) <= len(other.constants))                      : return True
+    elif (len(self.tensors) <= len(other.tensors))                          : return True
+    elif ([t.name for t in self.tensors] <= [t.name for t in other.tensors]): return True
+    elif (self.tensors <= other.tensors)                                    : return True
+    elif (self.constants <= other.constants)                                : return True
+    elif ( (self.numConstant - other.numConstant) <= -1.0e-6)               : return True
+  
   def __lt__(self,other):
     if not isinstance(other,term):
       raise TypeError("term object can only be compared to other term objects.")
 
-    # sort by number of loose creation operators first
-    retval = (self.nCreOps() < other.nCreOps())
-    if retval != 0:
-      return retval
-
-    # next sort by number of loose destruction operators
-    retval = (self.nDesOps() < other.nDesOps())
-    if retval != 0:
-      return retval
-
-    # next sort by the orders of the spin free excitation operators
-    retval = (self.sfExOp_ranks() < other.sfExOp_ranks())
-    if retval != 0:
-      return retval
-
-    # next sort by the number of constants
-    retval = (len(self.constants) < len(other.constants))
-    if retval != 0:
-      return retval
-
-    # next sort by the number of tensors
-    retval = (len(self.tensors) < len(other.tensors))
-    if retval != 0:
-      return retval
-
-    # next sort by the tensors' names
-    retval = ([t.name for t in self.tensors] < [t.name for t in other.tensors])
-    if retval != 0:
-      return retval
-
-    # next sort by the tensors
-    retval = (self.tensors < other.tensors)
-    if retval != 0:
-      return retval
-
-    # next sort by the constants
-    retval = (self.constants < other.constants)
-    if retval != 0:
-      return retval
-
-    # finally compare the numerical constants
-    numDiff = self.numConstant - other.numConstant
-    if abs(numDiff) < 1e-6:
-      return 0
-    elif numDiff < 0:
-      return -1
-    elif numDiff > 0:
-      return 1
-    else:
-      raise RuntimeError("Failure in comparison of terms' numeric constants.")
-    return numDiff
+    if   (self.nCreOps() < other.nCreOps())                                : return True
+    elif (self.nDesOps() < other.nDesOps())                                : return True
+    elif (self.sfExOp_ranks() < other.sfExOp_ranks())                      : return True
+    elif (len(self.constants) < len(other.constants))                      : return True
+    elif (len(self.tensors) < len(other.tensors))                          : return True
+    elif ([t.name for t in self.tensors] < [t.name for t in other.tensors]): return True
+    elif (self.tensors < other.tensors)                                    : return True
+    elif (self.constants < other.constants)                                : return True
+    elif ( (self.numConstant - other.numConstant) < -1.0e-6)               : return True
 
   def __eq__(self,other):
     if not isinstance(other,term):
       raise TypeError("term object can only be compared to other term objects.")
 
     # sort by number of loose creation operators first
-    retval = (self.nCreOps() == other.nCreOps())
-    if retval != 0:
-      return retval
-
-    # next sort by number of loose destruction operators
-    retval = (self.nDesOps() == other.nDesOps())
-    if retval != 0:
-      return retval
-
-    # next sort by the orders of the spin free excitation operators
-    retval = (self.sfExOp_ranks() == other.sfExOp_ranks())
-    if retval != 0:
-      return retval
-
-    # next sort by the number of constants
-    retval = (len(self.constants) == len(other.constants))
-    if retval != 0:
-      return retval
-
-    # next sort by the number of tensors
-    retval = (len(self.tensors) == len(other.tensors))
-    if retval != 0:
-      return retval
-
-    # next sort by the tensors' names
-    retval = ([t.name for t in self.tensors] == [t.name for t in other.tensors])
-    if retval != 0:
-      return retval
-
-    # next sort by the tensors
-    retval = (self.tensors == other.tensors)
-    if retval != 0:
-      return retval
-
-    # next sort by the constants
-    retval = (self.constants == other.constants)
-    if retval != 0:
-      return retval
-
-    # finally compare the numerical constants
-    numDiff = self.numConstant - other.numConstant
-    if abs(numDiff) < 1e-6:
-      return 0
-    elif numDiff < 0:
-      return -1
-    elif numDiff > 0:
-      return 1
-    else:
-      raise RuntimeError("Failure in comparison of terms' numeric constants.")
-    return numDiff
+    if (self.nCreOps() == other.nCreOps()):
+      # next sort by number of loose destruction operators
+      elif (self.nDesOps() == other.nDesOps()):
+        # next sort by the orders of the spin free excitation operators
+        elif (self.sfExOp_ranks() == other.sfExOp_ranks()):
+          # next sort by the number of constants
+          elif (len(self.constants) == len(other.constants)):
+            # next sort by the number of tensors
+            elif (len(self.tensors) == len(other.tensors)):
+              # next sort by the tensors' names
+              elif ([t.name for t in self.tensors] == [t.name for t in other.tensors]):
+                # next sort by the tensors
+                elif (self.tensors == other.tensors):
+                  # next sort by the constants
+                  elif (self.constants == other.constants):
+                    # finally compare the numerical constants
+                    numDiff = self.numConstant - other.numConstant
+                    if abs(numDiff) < 1e-6: return True
+                    else return False
+                  else return False
+                else return False
+              else return False
+            else return False
+          else return False
+      else return False
+    else return False
   
   #------------------------------------------------------------------------------------------------
 
