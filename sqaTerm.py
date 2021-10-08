@@ -94,33 +94,31 @@ class term:
     if not isinstance(other,term):
       raise TypeError("term object can only be compared to other term objects.")
 
-    # sort by number of loose creation operators first
     if (self.nCreOps() == other.nCreOps()):
       # next sort by number of loose destruction operators
-      elif (self.nDesOps() == other.nDesOps()):
+      if (self.nDesOps() == other.nDesOps()):
         # next sort by the orders of the spin free excitation operators
-        elif (self.sfExOp_ranks() == other.sfExOp_ranks()):
+        if (self.sfExOp_ranks() == other.sfExOp_ranks()):
           # next sort by the number of constants
-          elif (len(self.constants) == len(other.constants)):
+          if (len(self.constants) == len(other.constants)):
             # next sort by the number of tensors
-            elif (len(self.tensors) == len(other.tensors)):
+            if (len(self.tensors) == len(other.tensors)):
               # next sort by the tensors' names
-              elif ([t.name for t in self.tensors] == [t.name for t in other.tensors]):
+              if ([t.name for t in self.tensors] == [t.name for t in other.tensors]):
                 # next sort by the tensors
-                elif (self.tensors == other.tensors):
+                if (self.tensors == other.tensors):
                   # next sort by the constants
-                  elif (self.constants == other.constants):
+                  if (self.constants == other.constants):
                     # finally compare the numerical constants
-                    numDiff = self.numConstant - other.numConstant
-                    if abs(numDiff) < 1e-6: return True
-                    else return False
-                  else return False
-                else return False
-              else return False
-            else return False
-          else return False
-      else return False
-    else return False
+                    if abs(self.numConstant - other.numConstant) < 1e-6: return True
+                    else: return False
+                  else: return False
+                else: return False
+              else: return False
+            else: return False
+          else: return False
+      else: return False
+    else: return False
   
   #------------------------------------------------------------------------------------------------
 
